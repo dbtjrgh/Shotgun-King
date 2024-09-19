@@ -12,9 +12,10 @@ GameObject:
   - component: {fileID: 33766683336993256}
   - component: {fileID: 23670962956586524}
   - component: {fileID: 64769345492412830}
+  - component: {fileID: 831961538}
   m_Layer: 0
   m_Name: king_white
-  m_TagString: Untagged
+  m_TagString: AIKing
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -26,7 +27,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1793788843620320}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -99,6 +100,20 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300032, guid: 7b1ebbee2001ef74887110b41491763f, type: 3}
+--- !u!114 &831961538
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1793788843620320}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 298ce1c6d71f68a49b5c460bfe2ecc82, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentPos: {x: 0, y: 0}
+  isCaptured: 0
 --- !u!1 &244901900688506954
 GameObject:
   m_ObjectHideFlags: 0

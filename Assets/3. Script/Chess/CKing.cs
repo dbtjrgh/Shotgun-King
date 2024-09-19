@@ -1,25 +1,37 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.PlayerSettings;
 
-public class CKing : CPlayerMoveableChess
+public class CKing : CChessPiece
 {
-    private void Start()
+    public override List<Vector2Int> GetAvailableMoves()
     {
-        MoveToCoordinate(new Vector2Int(3, 2));
-        CBoardManager.PlaceChessman(this, pos);
+        List<Vector2Int> moves = new List<Vector2Int>();
+
+        for (int x = -1; x <= 1; x++)
+        {
+            for (int y = -1; y <= 1; y++)
+            {
+                if (x == 0 && y == 0) continue;
+
+                Vector2Int movePos = new Vector2Int(currentPos.x + x, currentPos.y + y);
+                if (IsValidMove(movePos))
+                {
+                    moves.Add(movePos);
+                }
+            }
+        }
+
+        return moves;
     }
 
-    public override List<Vector2Int> MoveableCoord()
+    bool IsValidMove(Vector2Int pos)
     {
-        List<Vector2Int> li = new List<Vector2Int>();
-        int[] x = new int[3] { 1, 0, -1 };
-        int[] y = new int[3] { 1, 0, -1 };
-        for (int i = 0; i < 3; i++)
-            for (int j = 0; j < 3; j++)
-                if (CBoardManager.IsCoordAvailable(pos + Vector2Int.right * x[i] + Vector2Int.up * y[j]))
-                    li.Add(pos + Vector2Int.right * x[i] + Vector2Int.up * y[j]);
-        return li;
+        // 체스판 범위 확인 및 다른 말의 위치 확인
+        if (pos.x >= 0 && pos.x < 8 && pos.y >= 0 && pos.y < 8)
+        {
+            CChessPiece pieceAtTarget = boardManager.GetPieceAt(pos.x, pos.y);
+            return pieceAtTarget == null || pieceAtTarget.tag != "PlayerKing";
+        }
+        return false;
     }
 }
