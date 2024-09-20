@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 33202118859764832}
   - component: {fileID: 23497045549293984}
   - component: {fileID: 64832716672878300}
-  - component: {fileID: 1964525413}
   m_Layer: 0
   m_Name: knight_white
   m_TagString: EnemyPiece
@@ -100,20 +99,6 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300034, guid: 7b1ebbee2001ef74887110b41491763f, type: 3}
---- !u!114 &1964525413
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1742490947705592}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e419d8168b0d48741b4833a12cc7495f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  currentPos: {x: 0, y: 0}
-  isCaptured: 0
 --- !u!1 &5689496967030929930
 GameObject:
   m_ObjectHideFlags: 0
