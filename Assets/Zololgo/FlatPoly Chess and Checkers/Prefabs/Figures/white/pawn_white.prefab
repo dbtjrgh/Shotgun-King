@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 33956546302850544}
   - component: {fileID: 23348192419900880}
   - component: {fileID: 64939203052481636}
+  - component: {fileID: -7576463936073949233}
+  - component: {fileID: 3993166694267616259}
   m_Layer: 0
   m_Name: pawn_white
   m_TagString: EnemyPiece
@@ -99,6 +101,32 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300036, guid: 7b1ebbee2001ef74887110b41491763f, type: 3}
+--- !u!114 &-7576463936073949233
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1432260816013872}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62ff64cccddf67d48868bd3ad6e8fe88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isWhite: 1
+--- !u!114 &3993166694267616259
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1432260816013872}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62ff64cccddf67d48868bd3ad6e8fe88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isWhite: 1
 --- !u!1 &1183965480655557059
 GameObject:
   m_ObjectHideFlags: 0

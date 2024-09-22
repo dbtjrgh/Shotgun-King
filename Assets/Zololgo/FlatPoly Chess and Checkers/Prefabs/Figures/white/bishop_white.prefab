@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 33182926160551192}
   - component: {fileID: 23631250503494802}
   - component: {fileID: 64179698556854212}
+  - component: {fileID: 6336652525496865318}
   m_Layer: 0
   m_Name: bishop_white
   m_TagString: EnemyPiece
@@ -99,6 +100,19 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300028, guid: 7b1ebbee2001ef74887110b41491763f, type: 3}
+--- !u!114 &6336652525496865318
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1348297157947816}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fa84d8bdcf238d44ad0e9d1955cd8ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isWhite: 1
 --- !u!1 &976040152341516411
 GameObject:
   m_ObjectHideFlags: 0

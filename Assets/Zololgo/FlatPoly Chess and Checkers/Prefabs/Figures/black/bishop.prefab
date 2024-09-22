@@ -114,7 +114,7 @@ GameObject:
   - component: {fileID: 719224039662995148}
   - component: {fileID: 710765794232596294}
   - component: {fileID: 678586547450496016}
-  - component: {fileID: 688718442363846286}
+  - component: {fileID: -9115349349830705405}
   m_Layer: 0
   m_Name: bishop
   m_TagString: EnemyPiece
@@ -202,7 +202,7 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300028, guid: 7b1ebbee2001ef74887110b41491763f, type: 3}
---- !u!114 &688718442363846286
+--- !u!114 &-9115349349830705405
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -211,11 +211,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 687392142536354428}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0b08213603d647e47903e43b8c516cd3, type: 3}
+  m_Script: {fileID: 11500000, guid: 3fa84d8bdcf238d44ad0e9d1955cd8ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentPos: {x: 0, y: 0}
-  isCaptured: 0
+  isWhite: 0
 --- !u!1 &8651905947191857809
 GameObject:
   m_ObjectHideFlags: 0

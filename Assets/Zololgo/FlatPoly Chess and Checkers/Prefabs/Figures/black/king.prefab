@@ -88,7 +88,7 @@ GameObject:
   - component: {fileID: 9050034805652511758}
   - component: {fileID: 9060046971705326586}
   - component: {fileID: 9009947252532534392}
-  - component: {fileID: 9074709450413771812}
+  - component: {fileID: -4980766023833274915}
   m_Layer: 0
   m_Name: king
   m_TagString: AIKing
@@ -176,7 +176,7 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300032, guid: 7b1ebbee2001ef74887110b41491763f, type: 3}
---- !u!114 &9074709450413771812
+--- !u!114 &-4980766023833274915
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -185,11 +185,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 9072931751316079110}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 298ce1c6d71f68a49b5c460bfe2ecc82, type: 3}
+  m_Script: {fileID: 11500000, guid: 76d6c626c8fb36847bca0f521baba444, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentPos: {x: 0, y: 0}
-  isCaptured: 0
+  isWhite: 0
 --- !u!1 &9118039721988519340
 GameObject:
   m_ObjectHideFlags: 0

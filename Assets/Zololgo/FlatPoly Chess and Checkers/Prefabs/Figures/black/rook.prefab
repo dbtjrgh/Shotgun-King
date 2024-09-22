@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 977812670814467302}
   - component: {fileID: 990116558922979954}
   - component: {fileID: 940459174903416554}
-  - component: {fileID: 1002561287904866547}
+  - component: {fileID: -8945241251447671158}
   m_Layer: 0
   m_Name: rook
   m_TagString: EnemyPiece
@@ -100,7 +100,7 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300040, guid: 7b1ebbee2001ef74887110b41491763f, type: 3}
---- !u!114 &1002561287904866547
+--- !u!114 &-8945241251447671158
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -109,11 +109,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1003737651248816890}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07844ec024a10764ca4b513783cff20c, type: 3}
+  m_Script: {fileID: 11500000, guid: 3d6164ebd23568e4da49ba3b530b4496, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentPos: {x: 0, y: 0}
-  isCaptured: 0
+  isWhite: 0
 --- !u!1 &4170582835517758637
 GameObject:
   m_ObjectHideFlags: 0

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3237937138911007095}
   - component: {fileID: 3227385462817834167}
   - component: {fileID: 3205672921811166155}
-  - component: {fileID: 3214025916713837170}
+  - component: {fileID: 6046574116733975170}
   m_Layer: 0
   m_Name: knight
   m_TagString: EnemyPiece
@@ -100,7 +100,7 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300034, guid: 7b1ebbee2001ef74887110b41491763f, type: 3}
---- !u!114 &3214025916713837170
+--- !u!114 &6046574116733975170
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -109,11 +109,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 3214641337941802991}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e419d8168b0d48741b4833a12cc7495f, type: 3}
+  m_Script: {fileID: 11500000, guid: 1bb53317a4a44294f9423d45eb781224, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentPos: {x: 0, y: 0}
-  isCaptured: 0
+  isWhite: 0
 --- !u!1 &7093069162048823069
 GameObject:
   m_ObjectHideFlags: 0
