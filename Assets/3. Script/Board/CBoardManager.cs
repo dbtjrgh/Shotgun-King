@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CBoardManager : MonoBehaviour
 {
-    public static CBoardManager instance {  get; set; }
+    public static CBoardManager instance { get; set; }
     private bool[,] allowedMoves { get; set; }
     public CChessman[,] Chessmans { get; set; }
     private CChessman selectedChessman;
@@ -17,7 +17,11 @@ public class CBoardManager : MonoBehaviour
     private CCameraTransView cameraTransView;
 
     public List<GameObject> chessmanPrefabs;
-    private List<GameObject> activeChessman = new List<GameObject>();
+    private List<GameObject> activeChessman;
+    private Material previousMat;
+    public Material selectedMat;
+
+    public int[] EnPassantMove { get; set; }
 
     public bool isWhiteTurn = true;
 
@@ -60,8 +64,30 @@ public class CBoardManager : MonoBehaviour
         {
             return;
         }
+
+        bool hasAtleastOneMove = false;
         allowedMoves = Chessmans[x, y].PossibleMove();
+
+        for (int i = 0; i < 8; i++)
+        {
+            for (int j = 0; j < 8; j++)
+            {
+                if (allowedMoves[i, j])
+                {
+                    hasAtleastOneMove = true;
+                }
+            }
+        }
+
+        if (!hasAtleastOneMove)
+        {
+            return;
+        }
+
         selectedChessman = Chessmans[x, y];
+        previousMat = selectedChessman.GetComponent<MeshRenderer>().material;
+        selectedMat.mainTexture = previousMat.mainTexture;
+        selectedChessman.GetComponent<MeshRenderer>().material = selectedMat;
         CBoardHighlights.instance.HighlightAllowedMoves(allowedMoves);
     }
     private void MoveChessman(int x, int y)
@@ -69,24 +95,71 @@ public class CBoardManager : MonoBehaviour
         if (allowedMoves[x, y])
         {
             CChessman c = Chessmans[x, y];
-            if(c != null&&c.isWhite != isWhiteTurn)
+            if (c != null && c.isWhite != isWhiteTurn)
             {
                 // Capture a piece
 
                 // If it is the King
-                if(c.GetType() == typeof(CKing))
+                if (c.GetType() == typeof(CKing))
                 {
+                    EndGame();
                     return;
                 }
                 activeChessman.Remove(c.gameObject);
                 Destroy(c.gameObject);
             }
+
+            if (x == EnPassantMove[0] && y == EnPassantMove[1])
+            {
+                if (isWhiteTurn)
+                {
+                    c = Chessmans[x, y - 1];
+                }
+                else
+                {
+                    c = Chessmans[x, y + 1];
+                }
+                activeChessman.Remove(c.gameObject);
+                Destroy(c.gameObject);
+            }
+            EnPassantMove[0] = -1;
+            EnPassantMove[1] = -1;
+
+            if (selectedChessman.GetType() == typeof(CPawn))
+            {
+                if(y == 7)
+                {
+                    activeChessman.Remove(selectedChessman.gameObject);
+                    Destroy(selectedChessman.gameObject);
+                    SpawnChessMan(1,x, y);
+                    selectedChessman = Chessmans[x, y];
+                }
+                else if(y == 0 )
+                {
+                    activeChessman.Remove(selectedChessman.gameObject);
+                    Destroy(selectedChessman.gameObject);
+                    SpawnChessMan(7, x, y);
+                }
+                if (selectedChessman.CurrentY == 1 && y == 3)
+                {
+                    EnPassantMove[0] = x;
+                    EnPassantMove[1] = y - 1;
+                }
+                else if (selectedChessman.CurrentY == 6 && y == 4)
+                {
+                    EnPassantMove[0] = x;
+                    EnPassantMove[1] = y + 1;
+                }
+            }
+
             Chessmans[selectedChessman.CurrentX, selectedChessman.CurrentY] = null; // 이전 위치에서 체스말 삭제
             selectedChessman.transform.position = GetTileCenter(x, y); // 체스말 위치 갱신
             selectedChessman.SetPosition(x, y);
             Chessmans[x, y] = selectedChessman; // 새 위치에 체스말 등록
             isWhiteTurn = !isWhiteTurn;
         }
+
+        selectedChessman.GetComponent<MeshRenderer>().material = previousMat;
         CBoardHighlights.instance.Hidehighlights();
         selectedChessman = null; // 선택 해제
     }
@@ -141,6 +214,7 @@ public class CBoardManager : MonoBehaviour
     {
         activeChessman = new List<GameObject>();
         Chessmans = new CChessman[8, 8];
+        EnPassantMove = new int[2] { -1, -1 };
 
         // 화이트 팀 스폰 (z축을 가로로 변경)
         // 킹
@@ -194,5 +268,24 @@ public class CBoardManager : MonoBehaviour
             Debug.DrawLine(topRight, bottomLeft); // 대각선 2
         }
 
+    }
+
+    private void EndGame()
+    {
+        if (isWhiteTurn)
+        {
+            Debug.Log("White team wins");
+        }
+        else
+        {
+            Debug.Log("Black team wins");
+        }
+        foreach (GameObject go in activeChessman)
+        {
+            Destroy(go);
+        }
+        isWhiteTurn = true;
+        CBoardHighlights.instance.Hidehighlights();
+        SpawnAllChessmans();
     }
 }

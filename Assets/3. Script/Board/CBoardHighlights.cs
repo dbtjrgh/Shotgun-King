@@ -36,7 +36,7 @@ public class CBoardHighlights : MonoBehaviour
                 {
                     GameObject go = GetHighlightObject();
                     go.SetActive(true);
-                    go.transform.position = new Vector3 (i + 0.5f, 0, j + 0.5f);
+                    go.transform.position = new Vector3 (i + 0.5f, 0.1f, j + 0.5f);
                 }
             }
         }
