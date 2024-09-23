@@ -18,7 +18,7 @@ public class CKing : CChessman
         {
             for (int k = 0; k < 3; k++)
             {
-                if (i >= 0 || i < 8)
+                if (i != -1 && j != 8 && i != 8)
                 {
                     c = CBoardManager.instance.Chessmans[i, j]; 
                     if (c == null)
@@ -40,7 +40,7 @@ public class CKing : CChessman
         {
             for (int k = 0; k < 3; k++)
             {
-                if (i >= 0 || i < 8)
+                if (i != -1 && j != -1 && i != 8)
                 {
                     c = CBoardManager.instance.Chessmans[i, j];
                     if (c == null)
@@ -57,7 +57,7 @@ public class CKing : CChessman
         }
 
         // Middle Left
-        if(CurrentX != 0)
+        if(CurrentX - 1 != -1)
         {
             c = CBoardManager.instance.Chessmans[CurrentX - 1, CurrentY];
             if(c == null)
@@ -70,7 +70,7 @@ public class CKing : CChessman
             }
         }
         // Middle Right
-        if (CurrentX != 7)
+        if (CurrentX + 1 != 8)
         {
             c = CBoardManager.instance.Chessmans[CurrentX + 1, CurrentY];
             if (c == null)

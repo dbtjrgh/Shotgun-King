@@ -7,23 +7,17 @@ public class CQueen : CChessman
     public override bool[,] PossibleMove()
     {
         bool[,] r = new bool[8, 8];
-
         CChessman c;
         int i, j;
 
-        // Top Left
-        i = CurrentX;
-        j = CurrentY;
-
-        // Right
+        // Right (룩의 이동처럼 직선)
         i = CurrentX;
         while (true)
         {
             i++;
             if (i >= 8)
-            {
                 break;
-            }
+
             c = CBoardManager.instance.Chessmans[i, CurrentY];
             if (c == null)
             {
@@ -35,7 +29,7 @@ public class CQueen : CChessman
                 {
                     r[i, CurrentY] = true;
                 }
-                break;
+                break; // 다른 말이 있으면 경로 차단
             }
         }
 
@@ -45,9 +39,8 @@ public class CQueen : CChessman
         {
             i--;
             if (i < 0)
-            {
                 break;
-            }
+
             c = CBoardManager.instance.Chessmans[i, CurrentY];
             if (c == null)
             {
@@ -62,55 +55,54 @@ public class CQueen : CChessman
                 break;
             }
         }
+
         // Up
-        i = CurrentX;
+        j = CurrentY;
         while (true)
         {
-            i++;
-            if (i >= 8)
-            {
+            j++;
+            if (j >= 8)
                 break;
-            }
-            c = CBoardManager.instance.Chessmans[CurrentX, i];
+
+            c = CBoardManager.instance.Chessmans[CurrentX, j];
             if (c == null)
             {
-                r[CurrentX, i] = true;
+                r[CurrentX, j] = true;
             }
             else
             {
                 if (c.isWhite != isWhite)
                 {
-                    r[CurrentX, i] = true;
+                    r[CurrentX, j] = true;
                 }
                 break;
             }
         }
 
         // Down
-        i = CurrentX;
+        j = CurrentY;
         while (true)
         {
-            i--;
-            if (i < 0)
-            {
+            j--;
+            if (j < 0)
                 break;
-            }
-            c = CBoardManager.instance.Chessmans[CurrentX, i];
+
+            c = CBoardManager.instance.Chessmans[CurrentX, j];
             if (c == null)
             {
-                r[CurrentX, i] = true;
+                r[CurrentX, j] = true;
             }
             else
             {
                 if (c.isWhite != isWhite)
                 {
-                    r[CurrentX, i] = true;
+                    r[CurrentX, j] = true;
                 }
                 break;
             }
         }
 
-        // Top Left
+        // Top Left (비숍의 이동처럼 대각선)
         i = CurrentX;
         j = CurrentY;
         while (true)
@@ -118,9 +110,8 @@ public class CQueen : CChessman
             i--;
             j++;
             if (i < 0 || j >= 8)
-            {
                 break;
-            }
+
             c = CBoardManager.instance.Chessmans[i, j];
             if (c == null)
             {
@@ -144,9 +135,8 @@ public class CQueen : CChessman
             i++;
             j++;
             if (i >= 8 || j >= 8)
-            {
                 break;
-            }
+
             c = CBoardManager.instance.Chessmans[i, j];
             if (c == null)
             {
@@ -170,9 +160,8 @@ public class CQueen : CChessman
             i--;
             j--;
             if (i < 0 || j < 0)
-            {
                 break;
-            }
+
             c = CBoardManager.instance.Chessmans[i, j];
             if (c == null)
             {
@@ -187,6 +176,7 @@ public class CQueen : CChessman
                 break;
             }
         }
+
         // Down Right
         i = CurrentX;
         j = CurrentY;
@@ -195,9 +185,8 @@ public class CQueen : CChessman
             i++;
             j--;
             if (i >= 8 || j < 0)
-            {
                 break;
-            }
+
             c = CBoardManager.instance.Chessmans[i, j];
             if (c == null)
             {

@@ -7,7 +7,6 @@ public class CRook : CChessman
     public override bool[,] PossibleMove()
     {
         bool[,] r = new bool[8, 8];
-
         CChessman c;
         int i;
 
@@ -17,21 +16,20 @@ public class CRook : CChessman
         {
             i++;
             if (i >= 8)
-            {
                 break;
-            }
+
             c = CBoardManager.instance.Chessmans[i, CurrentY];
             if (c == null)
             {
-                r[i, CurrentY] = true;
+                r[i, CurrentY] = true;  // 빈 칸
             }
             else
             {
-                if (c.isWhite != isWhite)
+                if (isWhite != c.isWhite) // 다른 팀의 말일 때
                 {
                     r[i, CurrentY] = true;
                 }
-                break;
+                break; // 말이 있으면 경로 차단
             }
         }
 
@@ -41,9 +39,8 @@ public class CRook : CChessman
         {
             i--;
             if (i < 0)
-            {
                 break;
-            }
+
             c = CBoardManager.instance.Chessmans[i, CurrentY];
             if (c == null)
             {
@@ -51,22 +48,22 @@ public class CRook : CChessman
             }
             else
             {
-                if (c.isWhite != isWhite)
+                if (isWhite != c.isWhite)
                 {
                     r[i, CurrentY] = true;
                 }
                 break;
             }
         }
+
         // Up
-        i = CurrentX;
+        i = CurrentY;
         while (true)
         {
             i++;
             if (i >= 8)
-            {
                 break;
-            }
+
             c = CBoardManager.instance.Chessmans[CurrentX, i];
             if (c == null)
             {
@@ -74,7 +71,7 @@ public class CRook : CChessman
             }
             else
             {
-                if (c.isWhite != isWhite)
+                if (isWhite != c.isWhite)
                 {
                     r[CurrentX, i] = true;
                 }
@@ -83,14 +80,13 @@ public class CRook : CChessman
         }
 
         // Down
-        i = CurrentX;
+        i = CurrentY;
         while (true)
         {
             i--;
             if (i < 0)
-            {
                 break;
-            }
+
             c = CBoardManager.instance.Chessmans[CurrentX, i];
             if (c == null)
             {
@@ -98,13 +94,14 @@ public class CRook : CChessman
             }
             else
             {
-                if (c.isWhite != isWhite)
+                if (isWhite != c.isWhite)
                 {
                     r[CurrentX, i] = true;
                 }
                 break;
             }
         }
+
         return r;
     }
 }
