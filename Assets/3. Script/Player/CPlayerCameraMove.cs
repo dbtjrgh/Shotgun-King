@@ -18,12 +18,15 @@ public class CPlayerCameraMove : MonoBehaviour
     // 카메라만 회전시키기 위해 카메라 Transform을 따로 선언
     [SerializeField]
     private Transform playerCamera;
+    [SerializeField]
+    private Transform playerShotgun;
 
     private void Awake()
     {
         cameraTransView = FindObjectOfType<CCameraTransView>();
         this.transform.localEulerAngles = new Vector3(0, mouseX, 0); // 초기 좌우 회전 설정
         playerCamera.localEulerAngles = new Vector3(mouseY, 0, 0); // 카메라 상하 회전 설정
+        playerShotgun.localEulerAngles = new Vector3(mouseY, 0, 0); // 카메라 상하 회전 설정
     }
 
     void Update()
@@ -40,6 +43,7 @@ public class CPlayerCameraMove : MonoBehaviour
             mouseY -= Input.GetAxis("Mouse Y") * mouseSpeed;
             mouseY = Mathf.Clamp(mouseY, minYAngle, maxYAngle); // 상하 회전값 제한
             playerCamera.localEulerAngles = new Vector3(mouseY, 0, 0);
+            playerShotgun.localEulerAngles = new Vector3(mouseY, 0, 0);
         }
     }
 }
