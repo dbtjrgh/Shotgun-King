@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 23631250503494802}
   - component: {fileID: 6336652525496865318}
   - component: {fileID: -6258296737669898610}
-  - component: {fileID: 7991153562046337011}
   - component: {fileID: 3549876817193055709}
   m_Layer: 8
   m_Name: bishop_white
@@ -115,23 +114,6 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300028, guid: 7b1ebbee2001ef74887110b41491763f, type: 3}
---- !u!114 &7991153562046337011
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1348297157947816}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6fd6f0bb83d587343867b04fc3f581c0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hp: 1
-  destroyTime: 0
-  col: {fileID: -6258296737669898610}
-  go_rock: {fileID: 1348297157947816}
-  go_debris: {fileID: 1348297157947816}
 --- !u!54 &3549876817193055709
 Rigidbody:
   m_ObjectHideFlags: 0

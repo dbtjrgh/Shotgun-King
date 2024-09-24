@@ -11,7 +11,7 @@ public class CPlayerCameraMove : MonoBehaviour
     [SerializeField]
     private float maxYAngle = 60f;  // 상하 회전 제한 최대값
 
-    private float mouseX = 0f; // 좌우 회전값을 담을 변수
+    private float mouseX = 180f; // 좌우 회전값을 담을 변수 (초기값을 180도로 설정)
     private float mouseY = 0f;
     private CCameraTransView cameraTransView;
 
@@ -24,9 +24,11 @@ public class CPlayerCameraMove : MonoBehaviour
     private void Awake()
     {
         cameraTransView = FindObjectOfType<CCameraTransView>();
-        this.transform.localEulerAngles = new Vector3(0, mouseX, 0); // 초기 좌우 회전 설정
-        playerCamera.localEulerAngles = new Vector3(mouseY, 0, 0); // 카메라 상하 회전 설정
-        playerShotgun.localEulerAngles = new Vector3(mouseY, 0, 0); // 카메라 상하 회전 설정
+
+        // 초기 좌우 회전값을 180도로 설정하여 뒤를 보게 함
+        this.transform.localEulerAngles = new Vector3(0, mouseX, 0);
+        playerCamera.localEulerAngles = new Vector3(mouseY, 0, 0);
+        playerShotgun.localEulerAngles = new Vector3(mouseY, 0, 0);
     }
 
     void Update()

@@ -45,10 +45,6 @@ public class CCameraTransView : MonoBehaviour
         {
             Debug.LogWarning("PlayerKing 오브젝트를 찾을 수 없습니다. 계속 시도 중...");
         }
-        else
-        {
-            Debug.Log("PlayerCinemachine을 성공적으로 찾았습니다.");
-        }
     }
 
     /// <summary>

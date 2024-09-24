@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
@@ -21,8 +22,8 @@ public class CBoardManager : MonoBehaviour
     private Material previousMat;
     public Material selectedMat;
 
-    private CChessman lastMovedChessman = null;  // Track last moved piece
-    private Vector2 lastMoveTarget = Vector2.negativeInfinity; // Track last move target
+    private CChessman lastMovedChessman = null; 
+    private Vector2 lastMoveTarget = Vector2.negativeInfinity; 
 
     public int[] EnPassantMove { get; set; }
 
@@ -42,28 +43,88 @@ public class CBoardManager : MonoBehaviour
         UpdateSelection();
         DrawChessboard();
 
-        if (isWhiteTurn)
+        if (isWhiteTurn)  // AI 턴일 때
         {
-            AIPlay();  // AI가 백색 말들의 턴을 수행
-        }
-        else
-        {
-            if (Input.GetMouseButtonDown(0))
+            if (!IsInvoking(nameof(AIPlay))) // AI가 이미 실행 중이 아니면
             {
-                if (selectionX >= 0 && selectionY >= 0)
+                Invoke(nameof(AIPlay), 2.0f);  // 2초 후 AIPlay 실행
+            }
+        }
+        else  // 흑색 플레이어의 턴 (플레이어 조작)
+        {
+            HandleBlackPlayerTurn();
+        }
+    }
+
+    private bool kingSelected = false; // 킹이 선택되었는지 여부 확인
+
+    private void HandleBlackPlayerTurn()
+    {
+        if (Input.GetKeyDown(KeyCode.W) && !cameraTransView.isInTopView) // 첫 번째 W 입력 시
+        {
+            if (!kingSelected) // 아직 킹이 선택되지 않았을 때
+            {
+                // 모든 체스말을 순회하여 흑색 킹을 찾고 선택
+                for (int i = 0; i < 8; i++)
                 {
-                    if (selectedChessman == null)
+                    for (int j = 0; j < 8; j++)
                     {
-                        SelectChessman(selectionX, selectionY);
+                        CChessman chessman = Chessmans[i, j];
+                        if (chessman != null && chessman.GetType() == typeof(CKing) && !chessman.isWhite)
+                        {
+                            SelectChessman(i, j); // 흑색 킹을 선택
+                            kingSelected = true; // 킹 선택 상태를 true로 변경
+                            return;
+                        }
                     }
-                    else
-                    {
-                        MoveChessman(selectionX, selectionY);
-                    }
+                }
+            }
+            else // 두 번째 W 입력 시
+            {
+                if (selectionX >= 0 && selectionY >= 0 && selectedChessman != null)
+                {
+                    MoveChessman(selectionX, selectionY); // 킹 이동
+                    kingSelected = false; // 킹 선택 해제
+                }
+            }
+        }
+        else if (Input.GetKeyDown(KeyCode.Space) && kingSelected) // Space 입력 시 선택 취소
+        {
+            // 선택된 킹의 선택을 취소
+            DeselectChessman();
+            kingSelected = false;
+        }
+        else if (Input.GetMouseButtonDown(0) && cameraTransView.isInTopView)
+        {
+            if (selectionX >= 0 && selectionY >= 0)
+            {
+                if (selectedChessman == null)
+                {
+                    SelectChessman(selectionX, selectionY);
+                }
+                else
+                {
+                    MoveChessman(selectionX, selectionY);
                 }
             }
         }
     }
+
+    private void DeselectChessman()
+    {
+        // 선택된 체스말의 강조 표시를 제거하고 선택 해제
+        if (selectedChessman != null)
+        {
+            MeshRenderer renderer = selectedChessman.GetComponent<MeshRenderer>();
+            if (renderer != null)
+            {
+                renderer.material = selectedChessman.originalMaterial; // 원래 재질로 복원
+            }
+            CBoardHighlights.instance.Hidehighlights(); // 강조 표시 숨김
+            selectedChessman = null; // 선택된 체스말 초기화
+        }
+    }
+
 
     private void AIPlay()
     {
@@ -144,7 +205,7 @@ public class CBoardManager : MonoBehaviour
 
 
 
-    private void SelectChessman(int x, int y)
+    public void SelectChessman(int x, int y)
     {
         if (Chessmans[x, y] == null)
         {
@@ -180,45 +241,50 @@ public class CBoardManager : MonoBehaviour
         selectedChessman.GetComponent<MeshRenderer>().material = selectedMat;
         CBoardHighlights.instance.HighlightAllowedMoves(allowedMoves);
     }
-    private void MoveChessman(int x, int y)
+    public void MoveChessman(int x, int y)
     {
         if (allowedMoves != null && allowedMoves[x, y])
         {
-            CChessman c = Chessmans[x, y];
+            CChessman targetChessman = Chessmans[x, y];
 
-            if (c != null && c.isWhite != isWhiteTurn)
+            // 목표 좌표에 적이 있으면 제거
+            if (targetChessman != null && targetChessman.isWhite != isWhiteTurn)
             {
-                // Capture a piece
-                if (c.GetType() == typeof(CKing))
+                if (targetChessman.GetType() == typeof(CKing))
                 {
                     EndGame();
                     return;
                 }
-                activeChessman.Remove(c.gameObject);
-                Destroy(c.gameObject);
+                activeChessman.Remove(targetChessman.gameObject);
+                Destroy(targetChessman.gameObject);
             }
 
-            // Move the selected piece to the new position
-            Chessmans[selectedChessman.CurrentX, selectedChessman.CurrentY] = null; // Remove from the old position
-            selectedChessman.transform.position = GetTileCenter(x, y); // Update the position
+            // 기존 위치를 비우고 새 위치로 체스말 이동
+            Chessmans[selectedChessman.CurrentX, selectedChessman.CurrentY] = null;
+            Vector3 targetPosition = GetTileCenter(x, y);
+
+            // DoTween을 사용하여 부드럽게 이동
+            selectedChessman.transform.DOMove(targetPosition, 0.5f).SetEase(Ease.InOutQuad); // 0.5초 동안 이동
+
+            // 위치 업데이트
             selectedChessman.SetPosition(x, y);
-            Chessmans[x, y] = selectedChessman; // Add to the new position
+            Chessmans[x, y] = selectedChessman;
 
             isWhiteTurn = !isWhiteTurn;
         }
 
+        // 체스말 선택 해제 및 강조 표시 제거
         if (selectedChessman != null)
         {
-            // Restore the original material after the move
             MeshRenderer renderer = selectedChessman.GetComponent<MeshRenderer>();
             if (renderer != null)
             {
-                renderer.material = selectedChessman.originalMaterial;  // Restore original material
+                renderer.material = selectedChessman.originalMaterial;
             }
         }
 
         CBoardHighlights.instance.Hidehighlights();
-        selectedChessman = null; // Deselect after moving
+        selectedChessman = null;
     }
 
 
@@ -252,16 +318,15 @@ public class CBoardManager : MonoBehaviour
         Chessmans[x, y] = go.GetComponent<CChessman>();
         Chessmans[x, y].SetPosition(x, y);
 
-        // Store the original material of the piece
         MeshRenderer renderer = go.GetComponent<MeshRenderer>();
         if (renderer != null)
         {
-            Chessmans[x, y].originalMaterial = renderer.material;  // Save the original material
+            Chessmans[x, y].originalMaterial = renderer.material;
         }
 
         activeChessman.Add(go);
     }
-    private Vector3 GetTileCenter(int x, int z)
+    public Vector3 GetTileCenter(int x, int z)
     {
         Vector3 origin = Vector3.zero;
         origin.x += (TILE_SIZE * x) + TILE_OFFSET; // x축에 값을 적용
@@ -335,7 +400,7 @@ public class CBoardManager : MonoBehaviour
 
     }
 
-    private void EndGame()
+    public void EndGame()
     {
         if (isWhiteTurn)
         {
@@ -349,8 +414,9 @@ public class CBoardManager : MonoBehaviour
         {
             Destroy(go);
         }
-        isWhiteTurn = true;
+        isWhiteTurn = false;
         CBoardHighlights.instance.Hidehighlights();
         SpawnAllChessmans();
     }
+
 }
