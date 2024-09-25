@@ -1,3 +1,4 @@
+using I18N.Common;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,11 +9,50 @@ public class CRook : CChessman
     public int CurrentHealth;
     private Rigidbody rb;
     private bool isDead = false;
+    public GameObject rookUI;
+    public GameObject ChessHp;              // Reference to the ChessHp container with GridLayoutGroup
+    public GameObject coloredHeartPrefab;   // Prefab for colored heart (full health)
+    public GameObject emptyHeartPrefab;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody>(); // Rigidbody 참조
         CurrentHealth = health;
+        if (rookUI != null)
+        {
+            rookUI.SetActive(false);  // Make sure the UI is initially hidden
+        }
+        UpdateHealthUI();
+    }
+
+    private void UpdateHealthUI()
+    {
+        // Clear any existing hearts in the ChessHp container
+        foreach (Transform child in ChessHp.transform)
+        {
+            Destroy(child.gameObject);
+        }
+
+        // Add colored hearts for current health
+        for (int i = 0; i < CurrentHealth; i++)
+        {
+            Instantiate(coloredHeartPrefab, ChessHp.transform);  // Create colored heart
+        }
+
+        // Add empty hearts for lost health
+        for (int i = 0; i < (health - CurrentHealth); i++)
+        {
+            Instantiate(emptyHeartPrefab, ChessHp.transform);  // Create empty heart
+        }
+    }
+    private void OnMouseEnter()
+    {
+        CChessUIManager.instance.ShowUI(rookUI);
+    }
+
+    private void OnMouseExit()
+    {
+        CChessUIManager.instance.HideUI(rookUI);
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -27,6 +67,7 @@ public class CRook : CChessman
     private void TakeDamage(Collision collision)
     {
         CurrentHealth--; // 체력 1 감소
+        UpdateHealthUI();
 
         if (CurrentHealth <= 0)
         {
@@ -146,3 +187,4 @@ public class CRook : CChessman
         return r;
     }
 }
+
