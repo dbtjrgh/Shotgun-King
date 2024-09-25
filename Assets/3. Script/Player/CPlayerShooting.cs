@@ -9,6 +9,7 @@ public class CPlayerShooting : MonoBehaviour
 
     public Animation camAnim;
     private CCameraTransView cameraTransView;
+    private CBoardManager boardManager;
 
     // 샷건의 공격범위를 시각화할 LineRenderer
     public LineRenderer lineRenderer;
@@ -30,6 +31,7 @@ public class CPlayerShooting : MonoBehaviour
     private void Awake()
     {
         cameraTransView = FindObjectOfType<CCameraTransView>();
+        boardManager = FindObjectOfType<CBoardManager>();
     }
 
     private void Update()
@@ -50,7 +52,7 @@ public class CPlayerShooting : MonoBehaviour
             return;
         }
 
-        if (Input.GetButtonDown("Fire1"))
+        if (Input.GetMouseButtonDown(0) && !boardManager.isWhiteTurn)
         {
             camAnim.Play(camAnim.clip.name);
             ShootShotgun();

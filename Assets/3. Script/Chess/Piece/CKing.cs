@@ -4,7 +4,7 @@ using UnityEngine;
 public class CKing : CChessman
 {
     public int health = 8; // 킹의 체력
-
+    public int CurrentHealth; // 킹의 현재 체력
     private Rigidbody rb; // 킹의 Rigidbody 참조
     private CCameraTransView cameraTransView;
     private bool isDead = false;
@@ -17,15 +17,9 @@ public class CKing : CChessman
     private void Start()
     {
         rb = GetComponent<Rigidbody>(); // Rigidbody 참조
+        CurrentHealth = health;
     }
 
-    private void Update()
-    {
-        if (!isWhite && cameraTransView.isInTopView)
-        {
-            return;
-        }
-    }
     private void OnCollisionEnter(Collision collision)
     {
         // Projectile 레이어에 속한 오브젝트와 충돌했을 때
@@ -38,9 +32,9 @@ public class CKing : CChessman
     // 데미지 처리
     private void TakeDamage(Collision collision)
     {
-        health--; // 체력 1 감소
+        CurrentHealth--; // 체력 1 감소
 
-        if (health <= 0)
+        if (CurrentHealth <= 0)
         {
             StartCoroutine(Die(collision)); // 체력이 0이면 죽는 처리
         }
@@ -57,6 +51,7 @@ public class CKing : CChessman
         rb.AddForce(knockbackDirection * 500f); // 힘을 주어 날아가게 함
 
         yield return new WaitForSeconds(5f); // 5초 대기 후
+        Destroy(gameObject, 1f);
 
         CBoardManager.instance.EndGame(); // 체력이 0이 되면 게임 종료 호출
     }

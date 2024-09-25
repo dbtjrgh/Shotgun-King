@@ -1,4 +1,5 @@
 using DG.Tweening;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
@@ -108,7 +109,24 @@ public class CBoardManager : MonoBehaviour
                 }
             }
         }
+        else if (Input.GetMouseButtonUp(0) && !cameraTransView.isInTopView)
+        {
+            isWhiteTurn = !isWhiteTurn;
+            // 체스말 선택 해제 및 강조 표시 제거
+            if (selectedChessman != null)
+            {
+                MeshRenderer renderer = selectedChessman.GetComponent<MeshRenderer>();
+                if (renderer != null)
+                {
+                    renderer.material = selectedChessman.originalMaterial;
+                }
+            }
+
+            CBoardHighlights.instance.Hidehighlights();
+            selectedChessman = null;
+        }
     }
+    
 
     private void DeselectChessman()
     {
@@ -247,18 +265,6 @@ public class CBoardManager : MonoBehaviour
         {
             CChessman targetChessman = Chessmans[x, y];
 
-            // 목표 좌표에 적이 있으면 제거
-            if (targetChessman != null && targetChessman.isWhite != isWhiteTurn)
-            {
-                if (targetChessman.GetType() == typeof(CKing))
-                {
-                    EndGame();
-                    return;
-                }
-                activeChessman.Remove(targetChessman.gameObject);
-                Destroy(targetChessman.gameObject);
-            }
-
             // 기존 위치를 비우고 새 위치로 체스말 이동
             Chessmans[selectedChessman.CurrentX, selectedChessman.CurrentY] = null;
             Vector3 targetPosition = GetTileCenter(x, y);
@@ -269,6 +275,17 @@ public class CBoardManager : MonoBehaviour
             // 위치 업데이트
             selectedChessman.SetPosition(x, y);
             Chessmans[x, y] = selectedChessman;
+            // 목표 좌표에 적이 있으면 제거
+            if (targetChessman != null && targetChessman.isWhite != isWhiteTurn)
+            {
+                if (targetChessman.GetType() == typeof(CKing))
+                {
+                    Invoke("EndGame", 2.0f);
+                }
+                activeChessman.Remove(targetChessman.gameObject);
+                Destroy(targetChessman.gameObject);
+            }
+
 
             isWhiteTurn = !isWhiteTurn;
         }
@@ -283,10 +300,10 @@ public class CBoardManager : MonoBehaviour
             }
         }
 
+        
         CBoardHighlights.instance.Hidehighlights();
         selectedChessman = null;
     }
-
 
     private void UpdateSelection()
     {
@@ -414,9 +431,9 @@ public class CBoardManager : MonoBehaviour
         {
             Destroy(go);
         }
-        isWhiteTurn = false;
         CBoardHighlights.instance.Hidehighlights();
         SpawnAllChessmans();
+        isWhiteTurn = false;
     }
 
 }
