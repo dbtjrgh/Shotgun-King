@@ -35,8 +35,6 @@ public class CPlayerCameraMove : MonoBehaviour
     {
         if (!cameraTransView.isInTopView)
         {
-            Cursor.lockState = CursorLockMode.Locked;
-
             // 좌우 회전 (캐릭터 전체가 회전)
             mouseX += Input.GetAxis("Mouse X") * mouseSpeed;
             this.transform.localEulerAngles = new Vector3(0, mouseX, 0);

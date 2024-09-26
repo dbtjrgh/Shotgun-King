@@ -13,6 +13,7 @@ public class CZoomCamera : MonoBehaviour
     public float autoVerticalPanSpeed = 0.0f;
     public float originDistance = 1.0f;
     public Transform originReference;
+    private CCameraTransView cameraTransView;
 
     private Vector3 lastMovement;
     private Vector2 deltaMovement;
@@ -28,6 +29,7 @@ public class CZoomCamera : MonoBehaviour
     {
         CalculateOrigin();
         originReference = null;
+        cameraTransView = FindObjectOfType<CCameraTransView>();
     }
 
     private void Update()
@@ -43,7 +45,7 @@ public class CZoomCamera : MonoBehaviour
             transform.RotateAround(originPosition, Vector3.up, deltaMovement.x * orbitSpeed * Time.deltaTime);
             transform.RotateAround(originPosition, transform.TransformDirection(Vector3.left), deltaMovement.y * orbitSpeed * Time.deltaTime);
         }
-        else if (Input.GetMouseButton(1))
+        else if (Input.GetMouseButton(1) && cameraTransView.isInTopView)
         {
             transform.Translate(Vector3.back * deltaMovement.y * zoomSpeed * Time.deltaTime);
             originDistance += deltaMovement.y * zoomSpeed * Time.deltaTime;

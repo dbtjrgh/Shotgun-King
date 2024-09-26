@@ -91,7 +91,7 @@ public class CProjectile : MonoBehaviour
 
         ContactPoint contact = collision.contacts[0];
         Quaternion rot = Quaternion.FromToRotation(Vector3.up, contact.normal);
-        Vector3 pos = contact.point + contact.normal * hitOffset;
+        Vector3 pos = contact.point + contact.normal * hitOffset; 
 
         if (hit != null)
         {

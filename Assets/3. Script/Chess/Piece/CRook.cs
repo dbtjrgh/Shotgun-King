@@ -6,53 +6,50 @@ using UnityEngine;
 public class CRook : CChessman
 {
     public int health = 5;
-    public int CurrentHealth;
+    public int currentHealth;
     private Rigidbody rb;
     private bool isDead = false;
-    public GameObject rookUI;
-    public GameObject ChessHp;              // Reference to the ChessHp container with GridLayoutGroup
-    public GameObject coloredHeartPrefab;   // Prefab for colored heart (full health)
+    public GameObject rookStatus;
+    public GameObject chessHp;             
+    public GameObject heartPrefab;   
     public GameObject emptyHeartPrefab;
 
     private void Start()
     {
-        rb = GetComponent<Rigidbody>(); // Rigidbody 참조
-        CurrentHealth = health;
-        if (rookUI != null)
+        rb = GetComponent<Rigidbody>();
+        currentHealth = health;
+        if (rookStatus != null)
         {
-            rookUI.SetActive(false);  // Make sure the UI is initially hidden
+            rookStatus.SetActive(false); 
         }
         UpdateHealthUI();
     }
 
     private void UpdateHealthUI()
     {
-        // Clear any existing hearts in the ChessHp container
-        foreach (Transform child in ChessHp.transform)
+        foreach (Transform child in chessHp.transform)
         {
             Destroy(child.gameObject);
         }
 
-        // Add colored hearts for current health
-        for (int i = 0; i < CurrentHealth; i++)
+        for (int i = 0; i < currentHealth; i++)
         {
-            Instantiate(coloredHeartPrefab, ChessHp.transform);  // Create colored heart
+            Instantiate(heartPrefab, chessHp.transform); 
         }
 
-        // Add empty hearts for lost health
-        for (int i = 0; i < (health - CurrentHealth); i++)
+        for (int i = 0; i < (health - currentHealth); i++)
         {
-            Instantiate(emptyHeartPrefab, ChessHp.transform);  // Create empty heart
+            Instantiate(emptyHeartPrefab, chessHp.transform); 
         }
     }
     private void OnMouseEnter()
     {
-        CChessUIManager.instance.ShowUI(rookUI);
+        CChessUIManager.instance.ShowUI(rookStatus);
     }
 
     private void OnMouseExit()
     {
-        CChessUIManager.instance.HideUI(rookUI);
+        CChessUIManager.instance.HideUI(rookStatus);
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -66,10 +63,10 @@ public class CRook : CChessman
     // 데미지 처리
     private void TakeDamage(Collision collision)
     {
-        CurrentHealth--; // 체력 1 감소
+        currentHealth--; // 체력 1 감소
         UpdateHealthUI();
 
-        if (CurrentHealth <= 0)
+        if (currentHealth <= 0)
         {
             Die(collision); // 체력이 0이면 죽는 처리
         }
@@ -81,10 +78,11 @@ public class CRook : CChessman
         isDead = true; // 이미 죽은 상태로 표시
         rb.isKinematic = false; // 물리 효과 적용
 
-        // 마지막 충돌 방향으로 날아가는 연출
-        Vector3 knockbackDirection = collision.contacts[0].normal * -1; // 충돌 방향의 반대 방향
-        rb.AddForce(knockbackDirection * 500f); // 힘을 주어 날아가게 함
-        Destroy(gameObject, 1f);
+        // 충돌한 총알의 방향과 속도를 기반으로 날아가는 연출
+        Vector3 knockbackDirection = collision.relativeVelocity.normalized; // 총알이 날아온 방향
+        rb.AddForce(knockbackDirection * 50f, ForceMode.Impulse); // 힘을 가해 날아가게 함
+
+        Destroy(gameObject, 1.5f); // 1초 후 오브젝트 파괴
     }
     public override bool[,] PossibleMove()
     {

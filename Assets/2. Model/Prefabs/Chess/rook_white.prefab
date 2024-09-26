@@ -102,10 +102,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isWhite: 1
   health: 5
-  CurrentHealth: 0
-  rookUI: {fileID: 3652910760138924418}
-  ChessHp: {fileID: 2882992414820695940}
-  coloredHeartPrefab: {fileID: 4116125030168135522, guid: ce3a6a9950395e942925e90757046d4b, type: 3}
+  currentHealth: 0
+  rookStatus: {fileID: 3652910760138924418}
+  chessHp: {fileID: 2882992414820695940}
+  heartPrefab: {fileID: 4116125030168135522, guid: ce3a6a9950395e942925e90757046d4b, type: 3}
   emptyHeartPrefab: {fileID: 3575271446010735883, guid: 8829991058064df4e9a90aa2914f890f, type: 3}
 --- !u!64 &-7004842210709202649
 MeshCollider:

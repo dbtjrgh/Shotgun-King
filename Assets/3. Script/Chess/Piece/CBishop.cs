@@ -5,15 +5,51 @@ using UnityEngine;
 public class CBishop : CChessman
 {
     public int health = 4;
-    public int CurrentHealth;
+    public int currentHealth;
     private Rigidbody rb;
     private bool isDead = false;
+    public GameObject bishopStatus;
+    public GameObject chessHp;
+    public GameObject heartPrefab;
+    public GameObject emptyHeartPrefab;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody>(); // Rigidbody 참조
-        CurrentHealth = health;
+        currentHealth = health;
+        if (bishopStatus != null)
+        {
+            bishopStatus.SetActive(false);
+        }
+        UpdateHealthUI();
     }
+
+    private void UpdateHealthUI()
+    {
+        foreach (Transform child in chessHp.transform)
+        {
+            Destroy(child.gameObject);
+        }
+        for (int i = 0; i < currentHealth; i++)
+        {
+            Instantiate(heartPrefab, chessHp.transform);
+        }
+        for (int i = 0; i < (health - currentHealth); i++)
+        {
+            Instantiate(emptyHeartPrefab, chessHp.transform);
+        }
+    }
+    
+    private void OnMouseEnter()
+    {
+        CChessUIManager.instance.ShowUI(bishopStatus);
+    }
+
+    private void OnMouseExit()
+    {
+        CChessUIManager.instance.HideUI(bishopStatus);
+    }
+
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -26,9 +62,9 @@ public class CBishop : CChessman
     // 데미지 처리
     private void TakeDamage(Collision collision)
     {
-        CurrentHealth--; // 체력 1 감소
-
-        if (CurrentHealth <= 0)
+        currentHealth--; // 체력 1 감소
+        UpdateHealthUI();
+        if (currentHealth <= 0)
         {
             Die(collision); // 체력이 0이면 죽는 처리
         }
@@ -40,10 +76,11 @@ public class CBishop : CChessman
         isDead = true; // 이미 죽은 상태로 표시
         rb.isKinematic = false; // 물리 효과 적용
 
-        // 마지막 충돌 방향으로 날아가는 연출
-        Vector3 knockbackDirection = collision.contacts[0].normal * -1; // 충돌 방향의 반대 방향
-        rb.AddForce(knockbackDirection * 500f); // 힘을 주어 날아가게 함
-        Destroy(gameObject, 1f);
+        // 충돌한 총알의 방향과 속도를 기반으로 날아가는 연출
+        Vector3 knockbackDirection = collision.relativeVelocity.normalized; // 총알이 날아온 방향
+        rb.AddForce(knockbackDirection * 50f, ForceMode.Impulse); // 힘을 가해 날아가게 함
+
+        Destroy(gameObject, 1.5f); // 1초 후 오브젝트 파괴
     }
     public override bool[,] PossibleMove()
     {
@@ -59,18 +96,18 @@ public class CBishop : CChessman
         {
             i--;
             j++;
-            if(i < 0 || j >= 8)
+            if (i < 0 || j >= 8)
             {
                 break;
             }
             c = CBoardManager.instance.Chessmans[i, j];
-            if(c == null)
+            if (c == null)
             {
                 r[i, j] = true;
             }
             else
             {
-                if(isWhite != c.isWhite)
+                if (isWhite != c.isWhite)
                 {
                     r[i, j] = true;
                 }

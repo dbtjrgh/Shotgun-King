@@ -423,7 +423,7 @@ public class CBoardManager : MonoBehaviour
         {
             Debug.Log("White team wins");
         }
-        else
+        else if (!isWhiteTurn)
         {
             Debug.Log("Black team wins");
         }

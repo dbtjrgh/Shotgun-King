@@ -4,10 +4,14 @@ using UnityEngine;
 public class CKing : CChessman
 {
     public int health = 8; // 킹의 체력
-    public int CurrentHealth; // 킹의 현재 체력
+    public int currentHealth; // 킹의 현재 체력
     private Rigidbody rb; // 킹의 Rigidbody 참조
     private CCameraTransView cameraTransView;
     private bool isDead = false;
+    public GameObject kingStatus;
+    public GameObject chessHp;
+    public GameObject heartPrefab;
+    public GameObject emptyHeartPrefab;
 
     private void Awake()
     {
@@ -17,9 +21,48 @@ public class CKing : CChessman
     private void Start()
     {
         rb = GetComponent<Rigidbody>(); // Rigidbody 참조
-        CurrentHealth = health;
+        currentHealth = health;
+        if(kingStatus != null)
+        {
+            kingStatus.SetActive(false);
+        }
+        if(isWhite)
+        {
+            UpdateHealthUI();
+        }
+    }
+    private void UpdateHealthUI()
+    {
+        foreach (Transform child in chessHp.transform)
+        {
+            Destroy(child.gameObject);
+        }
+
+        for (int i = 0; i < currentHealth; i++)
+        {
+            Instantiate(heartPrefab, chessHp.transform);
+        }
+
+        for (int i = 0; i < (health - currentHealth); i++)
+        {
+            Instantiate(emptyHeartPrefab, chessHp.transform);
+        }
+    }
+    private void OnMouseEnter()
+    {
+        if (isWhite)
+        {
+           CChessUIManager.instance.ShowUI(kingStatus);
+        }
     }
 
+    private void OnMouseExit()
+    {
+        if(isWhite)
+        {
+            CChessUIManager.instance.HideUI(kingStatus);
+        }
+    }
     private void OnCollisionEnter(Collision collision)
     {
         // Projectile 레이어에 속한 오브젝트와 충돌했을 때
@@ -32,9 +75,12 @@ public class CKing : CChessman
     // 데미지 처리
     private void TakeDamage(Collision collision)
     {
-        CurrentHealth--; // 체력 1 감소
-
-        if (CurrentHealth <= 0)
+        currentHealth--; // 체력 1 감소
+        if(isWhite)
+        {
+            UpdateHealthUI();
+        }
+        if (currentHealth <= 0)
         {
             StartCoroutine(Die(collision)); // 체력이 0이면 죽는 처리
         }
@@ -47,11 +93,11 @@ public class CKing : CChessman
         rb.isKinematic = false; // 물리 효과 적용
 
         // 마지막 충돌 방향으로 날아가는 연출
-        Vector3 knockbackDirection = collision.contacts[0].normal * -1; // 충돌 방향의 반대 방향
-        rb.AddForce(knockbackDirection * 500f); // 힘을 주어 날아가게 함
+        Vector3 knockbackDirection = collision.relativeVelocity.normalized; // 총알이 날아온 방향
+        rb.AddForce(knockbackDirection * 50f, ForceMode.Impulse); // 힘을 가해 날아가게 함
 
         yield return new WaitForSeconds(5f); // 5초 대기 후
-        Destroy(gameObject, 1f);
+        Destroy(gameObject, 1.5f);
 
         CBoardManager.instance.EndGame(); // 체력이 0이 되면 게임 종료 호출
     }

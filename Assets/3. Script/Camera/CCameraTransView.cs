@@ -12,8 +12,14 @@ public class CCameraTransView : MonoBehaviour
     public CinemachineVirtualCamera playerCinemachine; // 플레이어 카메라
 
     // 탑뷰 카메라가 활성화 되어 있는지 여부
-    public bool isInTopView = false;
+    public bool isInTopView;
     #endregion
+
+    private void Start()
+    {
+        isInTopView = false;
+        Cursor.lockState = CursorLockMode.Locked;
+    }
 
     private void Update()
     {
@@ -39,11 +45,6 @@ public class CCameraTransView : MonoBehaviour
         if (playerKing != null)
         {
             playerCinemachine = playerKing.GetComponentInChildren<CinemachineVirtualCamera>();
-        }
-
-        if (playerCinemachine == null)
-        {
-            Debug.LogWarning("PlayerKing 오브젝트를 찾을 수 없습니다. 계속 시도 중...");
         }
     }
 

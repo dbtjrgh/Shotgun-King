@@ -20,7 +20,7 @@ public class CPlayerShooting : MonoBehaviour
     // 샷건 데미지에 따라 총알 갯수로 구현 (총알 하나당 데미지 1)
     public int shotgunDamage;
     // 샷건 사거리에 따라 총알 사거리 구현
-    private int MinshotgunDistance;
+    public int MinshotgunDistance;
     [Range(1f, 8f)]
     public int MaxshotgunDistance;
     // 샷건 발사각 (수평)
@@ -88,7 +88,7 @@ public class CPlayerShooting : MonoBehaviour
         for (int i = 0; i < shotgunDamage; i++)
         {
             // Y축으로만 랜덤하게 퍼지도록 설정
-            float randomY = Random.Range(-shotAngle / 2, shotAngle / 2);
+            float randomY = Random.Range(-shotAngle / 3, shotAngle / 3);
             float randomX = Random.Range(-5, 5);
 
             // Y축 회전만 반영한 회전값
