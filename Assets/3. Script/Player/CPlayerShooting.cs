@@ -6,27 +6,30 @@ public class CPlayerShooting : MonoBehaviour
 {
     public GameObject firePoint;
     public GameObject projectTile;
-
     public Animation camAnim;
+
     private CCameraTransView cameraTransView;
     private CBoardManager boardManager;
 
-    // 샷건의 공격범위를 시각화할 LineRenderer
     public LineRenderer lineRenderer;
 
-    // 샷건의 공격범위를 알려주는 프로젝터
-    // public Projector shotgunProjector;
+    // 총알 UI 관리
+    public GameObject LoadedBulletUI; // 장전된 총알을 위한 UI
+    public GameObject PlayerBulletUI; // 플레이어가 가지고 있는 총알을 위한 UI
+    public GameObject BulletPrefab;
+    public GameObject EmptyBulletPrefab;
 
-    // 샷건 데미지에 따라 총알 갯수로 구현 (총알 하나당 데미지 1)
     public int shotgunDamage;
-    // 샷건 사거리에 따라 총알 사거리 구현
     public int MinshotgunDistance;
-    [Range(1f, 8f)]
-    public int MaxshotgunDistance;
-    // 샷건 발사각 (수평)
+    [Range(1f, 8f)] public int MaxshotgunDistance;
     public float shotAngle;
-
     public int numberOfPoints;
+
+    // 총알 관련 변수
+    public int maxBullets = 6; // 최대 소유 가능한 총알 수
+    public int currentBullets = 6; // 현재 플레이어가 가지고 있는 총알 수
+    public int loadedBullets = 2; // 현재 장전된 총알 수
+    public int maxLoadedBullets = 2; // 샷건에 장전 가능한 최대 총알 수
 
     private void Awake()
     {
@@ -34,17 +37,14 @@ public class CPlayerShooting : MonoBehaviour
         boardManager = FindObjectOfType<CBoardManager>();
     }
 
+    private void Start()
+    {
+        UpdateBulletUI();
+    }
+
     private void Update()
     {
-        // 사거리 설정
-        // shotgunProjector.farClipPlane = MaxshotgunDistance;
-
-        // 수평 발사각을 수직 시야각으로 변환
-        // shotgunProjector.fieldOfView = CalculateVerticalFOV(shotAngle, shotgunProjector.aspectRatio);
-
         MinshotgunDistance = MaxshotgunDistance - 2;
-
-        // 발사 범위를 시각화
         VisualizeShotgunSpread();
 
         if (cameraTransView.isInTopView)
@@ -52,60 +52,120 @@ public class CPlayerShooting : MonoBehaviour
             return;
         }
 
-        if (Input.GetMouseButtonDown(0) && !boardManager.isWhiteTurn)
+        if (Input.GetMouseButtonDown(0) && loadedBullets > 0 && !boardManager.isWhiteTurn)
         {
             camAnim.Play(camAnim.clip.name);
             ShootShotgun();
+            loadedBullets--; // 총알을 발사하면 장전된 총알을 하나 감소
+            UpdateBulletUI(); // UI 업데이트
+        }
+
+        // R키를 눌러 장전 (재장전)
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            Reload();
         }
     }
+
     // 발사 범위 시각화 함수
     private void VisualizeShotgunSpread()
     {
-        lineRenderer.positionCount = numberOfPoints;
-        Vector3[] linePoints = new Vector3[numberOfPoints];
+        lineRenderer.positionCount = numberOfPoints + 2;
+        Vector3[] linePoints = new Vector3[numberOfPoints + 2];
 
-        for (int i = 0; i < numberOfPoints; i++)
+        linePoints[0] = firePoint.transform.position;
+
+        for (int i = 1; i <= numberOfPoints; i++)
         {
-            // 각도 계산 (수평으로만 범위를 퍼트림)
-            float angle = Mathf.Lerp(-shotAngle / 2, shotAngle / 2, (float)i / (numberOfPoints - 1));
-
-            // 해당 각도로 위치 계산 (사거리 설정)
+            float angle = Mathf.Lerp(-shotAngle / 2, shotAngle / 2, (float)(i - 1) / (numberOfPoints - 1));
             Vector3 direction = Quaternion.Euler(0, angle, 0) * firePoint.transform.forward;
-
-            // Y축은 firePoint의 Y축을 유지하고 나머지는 계산된 위치로 설정
-            linePoints[i] = new Vector3(
-                firePoint.transform.position.x + direction.x * (MaxshotgunDistance - 0.5f),
-                firePoint.transform.position.y,  // Y축을 0으로 고정
-                firePoint.transform.position.z + direction.z * (MaxshotgunDistance - 0.5f)
-            );
+            linePoints[i] = firePoint.transform.position + direction.normalized * MaxshotgunDistance;
         }
 
+        linePoints[numberOfPoints + 1] = firePoint.transform.position;
         lineRenderer.SetPositions(linePoints);
     }
 
+    // 총알 발사 함수
     private void ShootShotgun()
     {
         for (int i = 0; i < shotgunDamage; i++)
         {
-            // Y축으로만 랜덤하게 퍼지도록 설정
             float randomY = Random.Range(-shotAngle / 3, shotAngle / 3);
             float randomX = Random.Range(-5, 5);
 
-            // Y축 회전만 반영한 회전값
             Quaternion randomRotation = Quaternion.Euler(randomX, randomY, 0);
-
-            // 원래 firePoint의 회전에 랜덤 회전을 추가
             Quaternion finalRotation = firePoint.transform.rotation * randomRotation;
 
-            // 발사체 생성
             GameObject projectileInstance = Instantiate(projectTile, firePoint.transform.position, finalRotation);
 
-            // 생성된 발사체의 CProjectile 스크립트에서 maxDistance를 MaxshotgunDistance로 설정
             CProjectile projectileScript = projectileInstance.GetComponent<CProjectile>();
             if (projectileScript != null)
             {
                 projectileScript.maxDistance = MaxshotgunDistance;
             }
         }
+    }
+
+    // 장전된 총알 UI 업데이트 함수
+    private void UpdateLoadedBulletUI()
+    {
+        // 기존 UI 제거
+        foreach (Transform child in LoadedBulletUI.transform)
+        {
+            Destroy(child.gameObject);
+        }
+
+        // 장전된 총알 표시
+        for (int i = 0; i < loadedBullets; i++)
+        {
+            Instantiate(BulletPrefab, LoadedBulletUI.transform);
+        }
+
+        // 빈 장전 슬롯 표시
+        for (int i = loadedBullets; i < maxLoadedBullets; i++)
+        {
+            Instantiate(EmptyBulletPrefab, LoadedBulletUI.transform);
+        }
+    }
+
+    // 플레이어가 가지고 있는 총알 UI 업데이트 함수
+    private void UpdatePlayerBulletUI()
+    {
+        // 기존 UI 제거
+        foreach (Transform child in PlayerBulletUI.transform)
+        {
+            Destroy(child.gameObject);
+        }
+
+        // 남은 총알 표시
+        for (int i = 0; i < currentBullets; i++)
+        {
+            Instantiate(BulletPrefab, PlayerBulletUI.transform);
+        }
+
+        // 빈 슬롯 표시
+        for (int i = currentBullets; i < maxBullets; i++)
+        {
+            Instantiate(EmptyBulletPrefab, PlayerBulletUI.transform);
+        }
+    }
+
+    // 두 가지 UI 업데이트 함수 호출
+    private void UpdateBulletUI()
+    {
+        UpdateLoadedBulletUI();  // 장전된 총알 UI 업데이트
+        UpdatePlayerBulletUI();  // 플레이어가 소유한 총알 UI 업데이트
+    }
+
+    // 장전 함수
+    private void Reload()
+    {
+        // 현재 가지고 있는 총알 중에서 샷건에 장전할 총알 수 계산
+        int bulletsToLoad = Mathf.Min(maxLoadedBullets - loadedBullets, currentBullets);
+        loadedBullets += bulletsToLoad;
+        currentBullets -= bulletsToLoad;
+
+        UpdateBulletUI();
     }
 }
