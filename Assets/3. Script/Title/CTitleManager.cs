@@ -7,7 +7,9 @@ using UnityEngine.UI;
 
 public class CTitleManager : MonoBehaviour
 {
+    #region º¯¼ö
     public Button gameStartButton;
+    #endregion
 
     private void Awake()
     {
@@ -18,4 +20,5 @@ public class CTitleManager : MonoBehaviour
     {
         SceneManager.LoadScene("Forest 1~3 Stage");
     }
+
 }

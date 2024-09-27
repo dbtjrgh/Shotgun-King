@@ -5,8 +5,10 @@ using UnityEngine.UI;
 
 public class CCrosshair : MonoBehaviour
 {
+    #region º¯¼ö
     private CCameraTransView cameraTransView;
     private RawImage image;
+    #endregion
 
     private void Awake()
     {

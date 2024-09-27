@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class CBoardManager : MonoBehaviour
 {
+    #region 변수
     public static CBoardManager instance { get; set; }
     private bool[,] allowedMoves { get; set; }
     public CChessman[,] Chessmans { get; set; }
@@ -17,6 +18,7 @@ public class CBoardManager : MonoBehaviour
     private int selectionX = -1;
     private int selectionY = -1;
     private CCameraTransView cameraTransView;
+    public CPlayerShooting playerShooting;
 
     public List<GameObject> chessmanPrefabs;
     private List<GameObject> activeChessman;
@@ -28,7 +30,9 @@ public class CBoardManager : MonoBehaviour
 
     public int[] EnPassantMove { get; set; }
 
+    private bool kingSelected = false; // 킹이 선택되었는지 여부 확인
     public bool isWhiteTurn = true;
+    #endregion
 
     private void Awake()
     {
@@ -36,11 +40,17 @@ public class CBoardManager : MonoBehaviour
     }
     private void Start()
     {
+        
         instance = this;
         SpawnAllChessmans();
     }
     private void Update()
     {
+        if (playerShooting == null)
+        {
+            playerShooting = FindObjectOfType<CPlayerShooting>();
+        }
+
         UpdateSelection();
         DrawChessboard();
 
@@ -57,7 +67,6 @@ public class CBoardManager : MonoBehaviour
         }
     }
 
-    private bool kingSelected = false; // 킹이 선택되었는지 여부 확인
 
     private void HandleBlackPlayerTurn()
     {
@@ -85,6 +94,8 @@ public class CBoardManager : MonoBehaviour
                 if (selectionX >= 0 && selectionY >= 0 && selectedChessman != null)
                 {
                     MoveChessman(selectionX, selectionY); // 킹 이동
+                    // 플레이어 이동 시 재장전 로직 실행
+                    playerShooting.MoveAndReload();
                     kingSelected = false; // 킹 선택 해제
                 }
             }
@@ -106,12 +117,13 @@ public class CBoardManager : MonoBehaviour
                 else
                 {
                     MoveChessman(selectionX, selectionY);
+                    // 플레이어 이동 시 재장전 로직 실행
+                    playerShooting.MoveAndReload();
                 }
             }
         }
         else if (Input.GetMouseButtonUp(0) && !cameraTransView.isInTopView)
         {
-            isWhiteTurn = !isWhiteTurn;
             // 체스말 선택 해제 및 강조 표시 제거
             if (selectedChessman != null)
             {
@@ -285,8 +297,6 @@ public class CBoardManager : MonoBehaviour
                 activeChessman.Remove(targetChessman.gameObject);
                 Destroy(targetChessman.gameObject);
             }
-
-
             isWhiteTurn = !isWhiteTurn;
         }
 

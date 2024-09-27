@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class CKing : CChessman
 {
+    #region 변수
     public int health = 8; // 킹의 체력
     public int currentHealth; // 킹의 현재 체력
     private Rigidbody rb; // 킹의 Rigidbody 참조
@@ -12,6 +13,7 @@ public class CKing : CChessman
     public GameObject chessHp;
     public GameObject heartPrefab;
     public GameObject emptyHeartPrefab;
+    #endregion
 
     private void Awake()
     {

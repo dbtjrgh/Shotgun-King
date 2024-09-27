@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class CProjectile : MonoBehaviour
 {
+    #region 변수
     [SerializeField]
     protected float speed = 15f;
 
@@ -48,6 +49,7 @@ public class CProjectile : MonoBehaviour
     public float maxDistance; // 총알이 이동할 최대 거리
 
     private Vector3 startPosition; // 총알의 시작 위치
+    #endregion
 
     private void Start()
     {

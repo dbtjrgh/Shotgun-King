@@ -3,10 +3,12 @@ using UnityEngine;
 
 public class CBoardHighlights : MonoBehaviour
 {
+    #region º¯¼ö
     public static CBoardHighlights instance { get; set; }
 
     public GameObject highlightPrefab;
     private List<GameObject> highlights;
+    #endregion
 
     private void Awake()
     {

@@ -6,15 +6,14 @@ using UnityEngine.UI;
 
 public class C2DChessView : MonoBehaviour
 {
+    #region º¯¼ö
     private CCameraTransView cameraTransView;
     private RawImage image;
-    private bool chessView;
-
+    #endregion
     private void Awake()
     {
         cameraTransView = FindObjectOfType<CCameraTransView>();
         image = GetComponent<RawImage>();
-        chessView = false;
     }
     private void Update()
     {

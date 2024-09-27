@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class CChessUIManager : MonoBehaviour
 {
+    #region º¯¼ö
     public static CChessUIManager instance;
     public TextMeshProUGUI atkText;
     public TextMeshProUGUI rangeText;
@@ -13,7 +14,7 @@ public class CChessUIManager : MonoBehaviour
     public TextMeshProUGUI rangeToolTipText;
     public TextMeshProUGUI shotAngleToolTipText;
     private CPlayerShooting playerShooting;
-
+    #endregion
     private void Awake()
     {
         if (instance == null)

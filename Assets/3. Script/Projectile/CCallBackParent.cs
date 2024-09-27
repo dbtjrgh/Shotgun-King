@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class CCallBackParent : MonoBehaviour
 {
+    #region º¯¼ö
     [SerializeField]
     protected Transform parentObject;
+    #endregion
 
     protected virtual void OnParticleSystemStopped()
     {

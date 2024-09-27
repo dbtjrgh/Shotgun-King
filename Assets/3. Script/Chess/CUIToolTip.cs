@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class CUIToolTip : MonoBehaviour
 {
+    #region 변수
     public GameObject tip;
     public Canvas canvas;
     public Vector3 offset = new Vector3(10f, 10f, 0f); // 마우스 커서와 tip 사이의 거리 조정
@@ -13,7 +14,7 @@ public class CUIToolTip : MonoBehaviour
     private GraphicRaycaster raycaster;
     private PointerEventData pointerEventData;
     private EventSystem eventSystem;
-
+    #endregion
     private void Start()
     {
         if (tip != null)

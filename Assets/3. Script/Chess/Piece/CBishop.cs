@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class CBishop : CChessman
 {
+    #region º¯¼ö
     public int health = 4;
     public int currentHealth;
     private Rigidbody rb;
@@ -12,6 +13,7 @@ public class CBishop : CChessman
     public GameObject chessHp;
     public GameObject heartPrefab;
     public GameObject emptyHeartPrefab;
+    #endregion
 
     private void Start()
     {

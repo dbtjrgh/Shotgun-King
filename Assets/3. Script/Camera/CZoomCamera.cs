@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class CZoomCamera : MonoBehaviour
 {
+    #region º¯¼ö
     public float orbitSpeed = 1.0f;
     public float zoomSpeed = 1.0f;
     public float panSpeed = 1.0f;
@@ -18,6 +19,7 @@ public class CZoomCamera : MonoBehaviour
     private Vector3 lastMovement;
     private Vector2 deltaMovement;
     private Vector3 originPosition;
+    #endregion
 
     private void OnDrawGizmos()
     {

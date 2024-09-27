@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class CPlayerCameraMove : MonoBehaviour
 {
+    #region 변수
     [SerializeField]
     private float mouseSpeed = 5f; // 회전 속도
     [SerializeField]
@@ -20,6 +21,7 @@ public class CPlayerCameraMove : MonoBehaviour
     private Transform playerCamera;
     [SerializeField]
     private Transform playerShotgun;
+    #endregion
 
     private void Awake()
     {

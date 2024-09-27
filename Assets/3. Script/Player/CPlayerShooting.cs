@@ -4,13 +4,12 @@ using UnityEngine;
 
 public class CPlayerShooting : MonoBehaviour
 {
+    #region 변수
     public GameObject firePoint;
     public GameObject projectTile;
     public Animation camAnim;
-
     private CCameraTransView cameraTransView;
     private CBoardManager boardManager;
-
     public LineRenderer lineRenderer;
 
     // 총알 UI 관리
@@ -28,8 +27,9 @@ public class CPlayerShooting : MonoBehaviour
     // 총알 관련 변수
     public int maxBullets = 6; // 최대 소유 가능한 총알 수
     public int currentBullets = 6; // 현재 플레이어가 가지고 있는 총알 수
-    public int loadedBullets = 2; // 현재 장전된 총알 수
     public int maxLoadedBullets = 2; // 샷건에 장전 가능한 최대 총알 수
+    public int loadedBullets = 2; // 현재 장전된 총알 수
+    #endregion
 
     private void Awake()
     {
@@ -54,6 +54,8 @@ public class CPlayerShooting : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0) && loadedBullets > 0 && !boardManager.isWhiteTurn)
         {
+            // 총을 쐈다면 턴 넘기기
+            boardManager.isWhiteTurn = !boardManager.isWhiteTurn;
             camAnim.Play(camAnim.clip.name);
             ShootShotgun();
             loadedBullets--; // 총알을 발사하면 장전된 총알을 하나 감소
@@ -61,8 +63,11 @@ public class CPlayerShooting : MonoBehaviour
         }
 
         // R키를 눌러 장전 (재장전)
-        if (Input.GetKeyDown(KeyCode.R))
+        // 장전된 총알이 2발 미만이고 플레이어 주머니에 총알이 있어야 함.
+        if (Input.GetKeyDown(KeyCode.R) && loadedBullets < maxLoadedBullets && currentBullets > 0)
         {
+            // 재장전을 했다면 턴 넘기기
+            boardManager.isWhiteTurn = !boardManager.isWhiteTurn;
             Reload();
         }
     }
@@ -166,6 +171,32 @@ public class CPlayerShooting : MonoBehaviour
         loadedBullets += bulletsToLoad;
         currentBullets -= bulletsToLoad;
 
+        UpdateBulletUI();
+    }
+
+    /// <summary>
+    /// 총알 장전 로직
+    /// ㄴ if (장전된 총알이 꽉 차 있을때 && 움직였을 시 && 플레이어 주머니에 총알이 꽉 차있지 않을 시)
+    /// { 플레이어 주머니에 총알 1발 생성 }
+    /// ㄴ else if (장전된 총알이 한발이라도 비어있을 때 && 움직였을 시 && 플레이어가 소지하고 있는 총알이 있을 시)
+    /// { 플레이어 주머니에서 총알을 가져와서 장전,  }
+    /// ㄴ else if (장전된 총알이 한발이라도 비어있을 때 &&  움직였을 시 && 플레이어가 소지하고 있는 총알이 없을 시)
+    /// { 플레이어 주머니에 총알 1발 생성  }
+    /// </summary>
+    public void MoveAndReload()
+    {
+        if(loadedBullets == maxLoadedBullets && currentBullets < maxBullets)
+        {
+            currentBullets++;
+        }
+        else if( loadedBullets < maxLoadedBullets && currentBullets > 0)
+        {
+            Reload();
+        }
+        else if (loadedBullets < maxLoadedBullets && currentBullets == 0)
+        {
+            currentBullets++;
+        }
         UpdateBulletUI();
     }
 }

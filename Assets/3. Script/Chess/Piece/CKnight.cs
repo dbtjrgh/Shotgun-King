@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class CKnight : CChessman
 {
+    #region 변수
     public int health = 3;
     public int currentHealth;
     private Rigidbody rb;
@@ -12,7 +13,7 @@ public class CKnight : CChessman
     public GameObject chessHp;
     public GameObject heartPrefab;
     public GameObject emptyHeartPrefab;
-
+    #endregion
     private void Start()
     {
         rb = GetComponent<Rigidbody>(); // Rigidbody 참조
