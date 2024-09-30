@@ -14,6 +14,10 @@ public class CBishop : CChessman
     public GameObject heartPrefab;
     public GameObject emptyHeartPrefab;
     #endregion
+    private void Awake()
+    {
+        damagePool = FindObjectOfType<CUIDamagePool>(); // 데미지 풀 찾기
+    }
 
     private void Start()
     {
@@ -64,6 +68,12 @@ public class CBishop : CChessman
     // 데미지 처리
     private void TakeDamage(Collision collision)
     {
+        GameObject damageUI = damagePool.GetObject();
+        if (damagePool != null)
+        {
+            CUIDamageText damageText = damageUI.GetComponent<CUIDamageText>();
+            damageText.Initialize(transform, Vector3.up, damagePool);
+        }
         currentHealth--; // 체력 1 감소
         UpdateHealthUI();
         if (currentHealth <= 0)

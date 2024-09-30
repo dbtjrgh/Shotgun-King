@@ -84,6 +84,7 @@ public class CProjectile : MonoBehaviour
     // 충돌 발생 시 호출되는 함수
     protected virtual void OnCollisionEnter(Collision collision)
     {
+
         rb.constraints = RigidbodyConstraints.FreezeAll;
         if (lightSourse != null)
             lightSourse.enabled = false;

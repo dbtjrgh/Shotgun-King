@@ -5,6 +5,7 @@ using UnityEngine;
 public class CChessman : MonoBehaviour
 {
     #region 변수
+    public CUIDamagePool damagePool; // 데미지 UI 풀
     public int CurrentX { get; private set; }
     public int CurrentY { get; private set; }
     public bool isWhite;

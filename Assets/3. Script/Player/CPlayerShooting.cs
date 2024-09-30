@@ -1,14 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class CPlayerShooting : MonoBehaviour
 {
     #region 변수
     public GameObject firePoint;
+    public Transform bulletCasePos;
     public GameObject projectTile;
+    public GameObject bulletCase;
+    public GameObject shotgun;
+    public GameObject shotgunReload;
     public Animation camAnim;
     private CCameraTransView cameraTransView;
+    private CStageResultUI stageResultUI;
     private CBoardManager boardManager;
     public LineRenderer lineRenderer;
 
@@ -17,6 +24,9 @@ public class CPlayerShooting : MonoBehaviour
     public GameObject PlayerBulletUI; // 플레이어가 가지고 있는 총알을 위한 UI
     public GameObject BulletPrefab;
     public GameObject EmptyBulletPrefab;
+
+    // 스테이지 UI 표시
+    public TextMeshProUGUI stageFloor;
 
     public int shotgunDamage;
     public int MinshotgunDistance;
@@ -34,6 +44,10 @@ public class CPlayerShooting : MonoBehaviour
     private void Awake()
     {
         cameraTransView = FindObjectOfType<CCameraTransView>();
+        if (stageResultUI == null)
+        {
+            stageResultUI = FindAnyObjectByType<CStageResultUI>();
+        }
         boardManager = FindObjectOfType<CBoardManager>();
     }
 
@@ -46,8 +60,14 @@ public class CPlayerShooting : MonoBehaviour
     {
         MinshotgunDistance = MaxshotgunDistance - 2;
         VisualizeShotgunSpread();
+        stageFloor.text = ($"현재 층 : <color=red>{ boardManager.stageFloor}층");
 
         if (cameraTransView.isInTopView)
+        {
+            return;
+        }
+
+        if(stageResultUI.resultUI.activeSelf)
         {
             return;
         }
@@ -64,7 +84,7 @@ public class CPlayerShooting : MonoBehaviour
 
         // R키를 눌러 장전 (재장전)
         // 장전된 총알이 2발 미만이고 플레이어 주머니에 총알이 있어야 함.
-        if (Input.GetKeyDown(KeyCode.R) && loadedBullets < maxLoadedBullets && currentBullets > 0)
+        if (Input.GetKeyDown(KeyCode.R) && loadedBullets < maxLoadedBullets && currentBullets > 0 && !boardManager.isWhiteTurn)
         {
             // 재장전을 했다면 턴 넘기기
             boardManager.isWhiteTurn = !boardManager.isWhiteTurn;
@@ -94,6 +114,7 @@ public class CPlayerShooting : MonoBehaviour
     // 총알 발사 함수
     private void ShootShotgun()
     {
+        // 총알 발사
         for (int i = 0; i < shotgunDamage; i++)
         {
             float randomY = Random.Range(-shotAngle / 3, shotAngle / 3);
@@ -110,6 +131,13 @@ public class CPlayerShooting : MonoBehaviour
                 projectileScript.maxDistance = MaxshotgunDistance;
             }
         }
+        // 탄피 배출
+        GameObject intantCase = Instantiate(bulletCase, bulletCasePos.position, bulletCasePos.rotation);
+        Rigidbody caseRigid = intantCase.GetComponent<Rigidbody>();
+        Vector3 caseVec = bulletCasePos.forward * Random.Range(-2, -1) + Vector3.up * Random.Range(2, 3);
+        caseRigid.AddForce(caseVec, ForceMode.Impulse);
+        caseRigid.AddTorque(Vector3.up * 10, ForceMode.Impulse);
+        Destroy(intantCase, 3f);
     }
 
     // 장전된 총알 UI 업데이트 함수
@@ -172,6 +200,16 @@ public class CPlayerShooting : MonoBehaviour
         currentBullets -= bulletsToLoad;
 
         UpdateBulletUI();
+        StartCoroutine(ReloadMotion());
+    }
+
+    private IEnumerator ReloadMotion()
+    {
+        shotgun.SetActive(false);
+        shotgunReload.SetActive(true);
+        yield return new WaitForSeconds(1f);
+        shotgun.SetActive(true);
+        shotgunReload.SetActive(false);
     }
 
     /// <summary>
@@ -185,11 +223,11 @@ public class CPlayerShooting : MonoBehaviour
     /// </summary>
     public void MoveAndReload()
     {
-        if(loadedBullets == maxLoadedBullets && currentBullets < maxBullets)
+        if (loadedBullets == maxLoadedBullets && currentBullets < maxBullets)
         {
             currentBullets++;
         }
-        else if( loadedBullets < maxLoadedBullets && currentBullets > 0)
+        else if (loadedBullets < maxLoadedBullets && currentBullets > 0)
         {
             Reload();
         }

@@ -15,6 +15,10 @@ public class CQueen : CChessman
     public GameObject emptyHeartPrefab;
     #endregion
 
+    private void Awake()
+    {
+        damagePool = FindObjectOfType<CUIDamagePool>(); // 데미지 풀 찾기
+    }
     private void Start()
     {
         rb = GetComponent<Rigidbody>(); // Rigidbody 참조
@@ -63,6 +67,12 @@ public class CQueen : CChessman
     // 데미지 처리
     private void TakeDamage(Collision collision)
     {
+        GameObject damageUI = damagePool.GetObject();
+        if (damagePool != null)
+        {
+            CUIDamageText damageText = damageUI.GetComponent<CUIDamageText>();
+            damageText.Initialize(transform, Vector3.up, damagePool);
+        }
         currentHealth--; // 체력 1 감소
         UpdateHealthUI();
         if (currentHealth <= 0)

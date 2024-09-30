@@ -16,6 +16,11 @@ public class CRook : CChessman
     public GameObject emptyHeartPrefab;
     #endregion
 
+    private void Awake()
+    {
+        damagePool = FindObjectOfType<CUIDamagePool>(); // 데미지 풀 찾기
+    }
+
     private void Start()
     {
         rb = GetComponent<Rigidbody>();

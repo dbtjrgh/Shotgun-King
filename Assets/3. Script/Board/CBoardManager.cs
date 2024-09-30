@@ -2,14 +2,15 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CBoardManager : MonoBehaviour
 {
     #region 변수
     public static CBoardManager instance { get; set; }
-    private bool[,] allowedMoves { get; set; }
     public CChessman[,] Chessmans { get; set; }
+    private bool[,] allowedMoves { get; set; }
     private CChessman selectedChessman;
 
     private const float TILE_SIZE = 1.0f;
@@ -19,11 +20,16 @@ public class CBoardManager : MonoBehaviour
     private int selectionY = -1;
     private CCameraTransView cameraTransView;
     public CPlayerShooting playerShooting;
+    private CStageResultUI stageResultUI;
+
+    public int shotgunDamage;
+    public int MaxshotgunDistance;
+    public float shotAngle;
 
     public List<GameObject> chessmanPrefabs;
+    public Material selectedMat;
     private List<GameObject> activeChessman;
     private Material previousMat;
-    public Material selectedMat;
 
     private CChessman lastMovedChessman = null; 
     private Vector2 lastMoveTarget = Vector2.negativeInfinity; 
@@ -32,11 +38,19 @@ public class CBoardManager : MonoBehaviour
 
     private bool kingSelected = false; // 킹이 선택되었는지 여부 확인
     public bool isWhiteTurn = true;
+
+    public int stageFloor;
     #endregion
 
     private void Awake()
     {
+        stageFloor = 1;
         cameraTransView = FindObjectOfType<CCameraTransView>();
+        stageResultUI = FindAnyObjectByType<CStageResultUI>();
+        shotgunDamage = 4;
+        MaxshotgunDistance = 5;
+        shotAngle = 55;
+
     }
     private void Start()
     {
@@ -50,6 +64,10 @@ public class CBoardManager : MonoBehaviour
         {
             playerShooting = FindObjectOfType<CPlayerShooting>();
         }
+        // 플레이어 능력치 관리
+        playerShooting.shotgunDamage = shotgunDamage;
+        playerShooting.MaxshotgunDistance = MaxshotgunDistance;
+        playerShooting.shotAngle = shotAngle;
 
         UpdateSelection();
         DrawChessboard();
@@ -94,8 +112,6 @@ public class CBoardManager : MonoBehaviour
                 if (selectionX >= 0 && selectionY >= 0 && selectedChessman != null)
                 {
                     MoveChessman(selectionX, selectionY); // 킹 이동
-                    // 플레이어 이동 시 재장전 로직 실행
-                    playerShooting.MoveAndReload();
                     kingSelected = false; // 킹 선택 해제
                 }
             }
@@ -117,8 +133,6 @@ public class CBoardManager : MonoBehaviour
                 else
                 {
                     MoveChessman(selectionX, selectionY);
-                    // 플레이어 이동 시 재장전 로직 실행
-                    playerShooting.MoveAndReload();
                 }
             }
         }
@@ -201,6 +215,9 @@ public class CBoardManager : MonoBehaviour
         // 1. 먼저 잡을 수 있는 말이 있으면 해당 이동을 우선 실행
         if (captureMoves.Count > 0)
         {
+            // 잡았으므로 스테이지 초기화 및 플레이어 패배
+            stageFloor = 1;
+            Debug.Log("화이트 윈");
             var captureMove = captureMoves[UnityEngine.Random.Range(0, captureMoves.Count)];  // 잡을 수 있는 말 중 하나를 랜덤으로 선택
             selectedChessman = captureMove.piece;
 
@@ -275,6 +292,11 @@ public class CBoardManager : MonoBehaviour
     {
         if (allowedMoves != null && allowedMoves[x, y])
         {
+            if (!isWhiteTurn)
+            {
+                Debug.Log("장전");
+                playerShooting.MoveAndReload();
+            }
             CChessman targetChessman = Chessmans[x, y];
 
             // 기존 위치를 비우고 새 위치로 체스말 이동
@@ -337,22 +359,6 @@ public class CBoardManager : MonoBehaviour
     }
 
 
-    private void SpawnChessMan(int index, int x, int y)
-    {
-        GameObject go = Instantiate(chessmanPrefabs[index], GetTileCenter(x, y), quaternion.identity) as GameObject;
-        go.transform.SetParent(transform);
-
-        Chessmans[x, y] = go.GetComponent<CChessman>();
-        Chessmans[x, y].SetPosition(x, y);
-
-        MeshRenderer renderer = go.GetComponent<MeshRenderer>();
-        if (renderer != null)
-        {
-            Chessmans[x, y].originalMaterial = renderer.material;
-        }
-
-        activeChessman.Add(go);
-    }
     public Vector3 GetTileCenter(int x, int z)
     {
         Vector3 origin = Vector3.zero;
@@ -373,28 +379,115 @@ public class CBoardManager : MonoBehaviour
         Chessmans = new CChessman[8, 8];
         EnPassantMove = new int[2] { -1, -1 };
 
-        // 화이트 팀 스폰 (z축을 가로로 변경)
-        // 킹
-        SpawnChessMan(0, 4, 0);
-        // 퀸
-        SpawnChessMan(1, 3, 0);
-        // 룩
-        SpawnChessMan(2, 0, 0);
-        SpawnChessMan(2, 7, 0);
-        // 비숍
-        SpawnChessMan(3, 2, 0);
-        SpawnChessMan(3, 5, 0);
-        // 나이트
-        SpawnChessMan(4, 1, 0);
-        SpawnChessMan(4, 6, 0);
-        // 폰
-        for (int i = 0; i < 8; i++)
+        // SpawnChessMan ( 체스말 인덱스, x좌표, y좌표)
+        // 스테이지 별 스폰 관리
+        switch (stageFloor)
         {
-            SpawnChessMan(5, i, 1); // z축으로 폰 배치
-        }
+            case 1: // 킹1, 비숍1, 나이트1, 폰4
+                // 킹
+                SpawnChessMan(0, 4, 0);
+                // 비숍
+                SpawnChessMan(3, 5, 0);
+                // 나이트
+                SpawnChessMan(4, 3, 0);
+                // 폰
+                for (int i = 3; i < 7; i++)
+                {
+                    SpawnChessMan(5, i, 1); // z축으로 폰 배치
+                }
+                break;
 
+            case 2: // 킹1, 비숍1, 룩1, 나이트1, 폰5
+                // 킹
+                SpawnChessMan(0, 4, 0);
+                // 비숍
+                SpawnChessMan(3, 5, 0);
+                // 룩
+                SpawnChessMan(2, 0, 0);
+                // 나이트
+                SpawnChessMan(4, 3, 0);
+                // 폰
+                for (int i = 2; i < 7; i++)
+                {
+                    SpawnChessMan(5, i, 1); // z축으로 폰 배치
+                }
+                break;
+            case 3: // 킹1, 비숍2, 룩1, 나이트2, 폰6
+                // 킹
+                SpawnChessMan(0, 4, 0);
+                // 비숍
+                SpawnChessMan(3, 3, 0);
+                SpawnChessMan(3, 5, 0);
+                // 룩
+                SpawnChessMan(2, 0, 0);
+                // 나이트
+                SpawnChessMan(4, 1, 0);
+                SpawnChessMan(4, 6, 0);
+                // 폰
+                for (int i = 2; i < 8; i++)
+                {
+                    SpawnChessMan(5, i, 1); // z축으로 폰 배치
+                }
+                break;
+
+            case 4: // 킹1, 퀸1, 비숍2, 룩1, 나이트2, 폰7
+                // 킹
+                SpawnChessMan(0, 4, 0);
+                // 퀸
+                SpawnChessMan(1, 3, 0);
+                // 룩
+                SpawnChessMan(2, 0, 0);
+                // 비숍
+                SpawnChessMan(3, 2, 0);
+                SpawnChessMan(3, 5, 0);
+                // 나이트
+                SpawnChessMan(4, 1, 0);
+                SpawnChessMan(4, 6, 0);
+                // 폰
+                for (int i = 1; i < 8; i++)
+                {
+                    SpawnChessMan(5, i, 1); // z축으로 폰 배치
+                }
+                break;
+            case 5: // 킹1, 퀸1, 비숍2, 룩2, 나이트2, 폰8
+                // 킹
+                SpawnChessMan(0, 4, 0);
+                // 퀸
+                SpawnChessMan(1, 3, 0);
+                // 룩
+                SpawnChessMan(2, 0, 0);
+                SpawnChessMan(2, 7, 0);
+                // 비숍
+                SpawnChessMan(3, 2, 0);
+                SpawnChessMan(3, 5, 0);
+                // 나이트
+                SpawnChessMan(4, 1, 0);
+                SpawnChessMan(4, 6, 0);
+                // 폰
+                for (int i = 0; i < 8; i++)
+                {
+                    SpawnChessMan(5, i, 1); // z축으로 폰 배치
+                }
+                break;
+        }
         // 블랙 팀 플레이어 스폰
         SpawnChessMan(6, 4, 7);
+    }
+    private void SpawnChessMan(int index, int x, int y)
+    {
+        GameObject go = Instantiate(chessmanPrefabs[index], GetTileCenter(x, y), quaternion.identity) as GameObject;
+        go.transform.SetParent(transform);
+
+        Chessmans[x, y] = go.GetComponent<CChessman>();
+        Chessmans[x, y].SetPosition(x, y);
+
+        MeshRenderer renderer = go.GetComponent<MeshRenderer>();
+        if (renderer != null)
+        {
+            Chessmans[x, y].originalMaterial = renderer.material;
+        }
+
+        activeChessman.Add(go);
     }
 
 
@@ -429,14 +522,7 @@ public class CBoardManager : MonoBehaviour
 
     public void EndGame()
     {
-        if (isWhiteTurn)
-        {
-            Debug.Log("White team wins");
-        }
-        else if (!isWhiteTurn)
-        {
-            Debug.Log("Black team wins");
-        }
+        ShowResultUI();
         foreach (GameObject go in activeChessman)
         {
             Destroy(go);
@@ -444,6 +530,11 @@ public class CBoardManager : MonoBehaviour
         CBoardHighlights.instance.Hidehighlights();
         SpawnAllChessmans();
         isWhiteTurn = false;
+    }
+
+    public void ShowResultUI()
+    {
+        stageResultUI.resultUI.SetActive(true);
     }
 
 }

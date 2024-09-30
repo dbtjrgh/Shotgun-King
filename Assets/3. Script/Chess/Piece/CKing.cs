@@ -13,11 +13,15 @@ public class CKing : CChessman
     public GameObject chessHp;
     public GameObject heartPrefab;
     public GameObject emptyHeartPrefab;
+    private CBoardManager boardManager;
     #endregion
+
 
     private void Awake()
     {
         cameraTransView = FindObjectOfType<CCameraTransView>();
+        damagePool = FindObjectOfType<CUIDamagePool>(); // 데미지 풀 찾기
+        boardManager = FindObjectOfType<CBoardManager>();
     }
 
     private void Start()
@@ -77,6 +81,12 @@ public class CKing : CChessman
     // 데미지 처리
     private void TakeDamage(Collision collision)
     {
+        GameObject damageUI = damagePool.GetObject();
+        if (damagePool != null)
+        {
+            CUIDamageText damageText = damageUI.GetComponent<CUIDamageText>();
+            damageText.Initialize(transform, Vector3.up, damagePool);
+        }
         currentHealth--; // 체력 1 감소
         if(isWhite)
         {
@@ -91,6 +101,9 @@ public class CKing : CChessman
     // 죽을 때 날아가는 연출과 파괴 처리
     private IEnumerator Die(Collision collision)
     {
+        // 백색 킹이 죽었다면 다음 스테이지로 구현
+
+
         isDead = true; // 이미 죽은 상태로 표시
         rb.isKinematic = false; // 물리 효과 적용
 
@@ -100,7 +113,7 @@ public class CKing : CChessman
 
         yield return new WaitForSeconds(5f); // 5초 대기 후
         Destroy(gameObject, 1.5f);
-
+        boardManager.stageFloor += 1;
         CBoardManager.instance.EndGame(); // 체력이 0이 되면 게임 종료 호출
     }
 
