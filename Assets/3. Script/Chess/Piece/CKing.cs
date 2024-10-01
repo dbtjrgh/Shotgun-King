@@ -111,10 +111,15 @@ public class CKing : CChessman
         Vector3 knockbackDirection = collision.relativeVelocity.normalized; // 총알이 날아온 방향
         rb.AddForce(knockbackDirection * 50f, ForceMode.Impulse); // 힘을 가해 날아가게 함
 
-        yield return new WaitForSeconds(5f); // 5초 대기 후
+        yield return new WaitForSeconds(2f); // 5초 대기 후
         Destroy(gameObject, 1.5f);
         boardManager.stageFloor += 1;
-        CBoardManager.instance.EndGame(); // 체력이 0이 되면 게임 종료 호출
+        if(isWhite)
+        {
+            CBoardManager.instance.EndGame(); // 체력이 0이 되면 게임 종료 호출
+            CBoardManager.instance.ShowResultUI();
+
+        }
     }
 
     public override bool[,] PossibleMove()

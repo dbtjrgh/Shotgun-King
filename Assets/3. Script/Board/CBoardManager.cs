@@ -31,8 +31,8 @@ public class CBoardManager : MonoBehaviour
     private List<GameObject> activeChessman;
     private Material previousMat;
 
-    private CChessman lastMovedChessman = null; 
-    private Vector2 lastMoveTarget = Vector2.negativeInfinity; 
+    private CChessman lastMovedChessman = null;
+    private Vector2 lastMoveTarget = Vector2.negativeInfinity;
 
     public int[] EnPassantMove { get; set; }
 
@@ -47,14 +47,12 @@ public class CBoardManager : MonoBehaviour
         stageFloor = 1;
         cameraTransView = FindObjectOfType<CCameraTransView>();
         stageResultUI = FindAnyObjectByType<CStageResultUI>();
-        shotgunDamage = 4;
-        MaxshotgunDistance = 5;
-        shotAngle = 55;
+        
 
     }
     private void Start()
     {
-        
+
         instance = this;
         SpawnAllChessmans();
     }
@@ -64,10 +62,14 @@ public class CBoardManager : MonoBehaviour
         {
             playerShooting = FindObjectOfType<CPlayerShooting>();
         }
-        // 플레이어 능력치 관리
-        playerShooting.shotgunDamage = shotgunDamage;
-        playerShooting.MaxshotgunDistance = MaxshotgunDistance;
-        playerShooting.shotAngle = shotAngle;
+        if (playerShooting != null)
+        {
+
+            // 플레이어 능력치 관리
+            playerShooting.shotgunDamage = shotgunDamage;
+            playerShooting.MaxshotgunDistance = MaxshotgunDistance;
+            playerShooting.shotAngle = shotAngle;
+        }
 
         UpdateSelection();
         DrawChessboard();
@@ -152,7 +154,7 @@ public class CBoardManager : MonoBehaviour
             selectedChessman = null;
         }
     }
-    
+
 
     private void DeselectChessman()
     {
@@ -332,7 +334,7 @@ public class CBoardManager : MonoBehaviour
             }
         }
 
-        
+
         CBoardHighlights.instance.Hidehighlights();
         selectedChessman = null;
     }
@@ -384,6 +386,9 @@ public class CBoardManager : MonoBehaviour
         switch (stageFloor)
         {
             case 1: // 킹1, 비숍1, 나이트1, 폰4
+                shotgunDamage = 4;
+                MaxshotgunDistance = 5;
+                shotAngle = 55;
                 // 킹
                 SpawnChessMan(0, 4, 0);
                 // 비숍
@@ -522,7 +527,6 @@ public class CBoardManager : MonoBehaviour
 
     public void EndGame()
     {
-        ShowResultUI();
         foreach (GameObject go in activeChessman)
         {
             Destroy(go);
