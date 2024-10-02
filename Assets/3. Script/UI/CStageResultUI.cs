@@ -7,7 +7,6 @@ using UnityEngine.UI;
 public class CStageResultUI : MonoBehaviour
 {
     CBoardManager boardManager;
-    CPlayerShooting playerShooting;
 
     public GameObject resultUI;
     public TextMeshProUGUI StageInfoText;
@@ -33,10 +32,6 @@ public class CStageResultUI : MonoBehaviour
 
     private void Update()
     {
-        if (playerShooting == null)
-        {
-            playerShooting = FindObjectOfType<CPlayerShooting>();
-        }
 
         StageInfoTextUpdate();
 

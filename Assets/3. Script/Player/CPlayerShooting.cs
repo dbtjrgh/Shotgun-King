@@ -16,6 +16,7 @@ public class CPlayerShooting : MonoBehaviour
     public Animation camAnim;
     private CCameraTransView cameraTransView;
     private CStageResultUI stageResultUI;
+    private CStageDefeatUI stageDefeatUI;
     private CBoardManager boardManager;
     public LineRenderer lineRenderer;
 
@@ -48,6 +49,10 @@ public class CPlayerShooting : MonoBehaviour
         {
             stageResultUI = FindAnyObjectByType<CStageResultUI>();
         }
+        if(stageDefeatUI == null)
+        {
+            stageDefeatUI = FindAnyObjectByType<CStageDefeatUI>();
+        }
         boardManager = FindObjectOfType<CBoardManager>();
     }
 
@@ -72,10 +77,15 @@ public class CPlayerShooting : MonoBehaviour
             return;
         }
 
+        if(stageDefeatUI.defeatUI.activeSelf)
+        {
+            return;
+        }
+
         if (Input.GetMouseButtonDown(0) && loadedBullets > 0 && !boardManager.isWhiteTurn)
         {
             // 총을 쐈다면 턴 넘기기
-            boardManager.isWhiteTurn = !boardManager.isWhiteTurn;
+            boardManager.isWhiteTurn = true;
             camAnim.Play(camAnim.clip.name);
             ShootShotgun();
             loadedBullets--; // 총알을 발사하면 장전된 총알을 하나 감소
@@ -87,7 +97,7 @@ public class CPlayerShooting : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R) && loadedBullets < maxLoadedBullets && currentBullets > 0 && !boardManager.isWhiteTurn)
         {
             // 재장전을 했다면 턴 넘기기
-            boardManager.isWhiteTurn = !boardManager.isWhiteTurn;
+            boardManager.isWhiteTurn = true;
             Reload();
         }
     }

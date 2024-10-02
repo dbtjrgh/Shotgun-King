@@ -102,8 +102,6 @@ public class CKing : CChessman
     private IEnumerator Die(Collision collision)
     {
         // 백색 킹이 죽었다면 다음 스테이지로 구현
-
-
         isDead = true; // 이미 죽은 상태로 표시
         rb.isKinematic = false; // 물리 효과 적용
 
@@ -112,10 +110,10 @@ public class CKing : CChessman
         rb.AddForce(knockbackDirection * 50f, ForceMode.Impulse); // 힘을 가해 날아가게 함
 
         yield return new WaitForSeconds(2f); // 5초 대기 후
-        Destroy(gameObject, 1.5f);
         boardManager.stageFloor += 1;
         if(isWhite)
         {
+            Destroy(gameObject);
             CBoardManager.instance.EndGame(); // 체력이 0이 되면 게임 종료 호출
             CBoardManager.instance.ShowResultUI();
 

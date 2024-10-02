@@ -19,8 +19,9 @@ public class CBoardManager : MonoBehaviour
     private int selectionX = -1;
     private int selectionY = -1;
     private CCameraTransView cameraTransView;
-    public CPlayerShooting playerShooting;
+    private CPlayerShooting playerShooting;
     private CStageResultUI stageResultUI;
+    private CStageDefeatUI stageDefeatUI;
 
     public int shotgunDamage;
     public int MaxshotgunDistance;
@@ -37,7 +38,7 @@ public class CBoardManager : MonoBehaviour
     public int[] EnPassantMove { get; set; }
 
     private bool kingSelected = false; // 킹이 선택되었는지 여부 확인
-    public bool isWhiteTurn = true;
+    public bool isWhiteTurn;
 
     public int stageFloor;
     #endregion
@@ -45,9 +46,10 @@ public class CBoardManager : MonoBehaviour
     private void Awake()
     {
         stageFloor = 1;
+        isWhiteTurn = false;
         cameraTransView = FindObjectOfType<CCameraTransView>();
         stageResultUI = FindAnyObjectByType<CStageResultUI>();
-        
+        stageDefeatUI = FindAnyObjectByType<CStageDefeatUI>();
 
     }
     private void Start()
@@ -78,8 +80,13 @@ public class CBoardManager : MonoBehaviour
         {
             if (!IsInvoking(nameof(AIPlay))) // AI가 이미 실행 중이 아니면
             {
-                Invoke(nameof(AIPlay), 2.0f);  // 2초 후 AIPlay 실행
+                Invoke(nameof(AIPlay), 3f);  // 2초 후 AIPlay 실행
             }
+        }
+        else if (IsInvoking(nameof(AIPlay)) && !isWhiteTurn)
+        {
+            isWhiteTurn = false;
+            CancelInvoke(nameof(AIPlay));
         }
         else  // 흑색 플레이어의 턴 (플레이어 조작)
         {
@@ -172,7 +179,7 @@ public class CBoardManager : MonoBehaviour
     }
 
 
-    private void AIPlay()
+    public void AIPlay()
     {
         List<(CChessman piece, int x, int y, bool isCapture)> validMoves = new List<(CChessman, int, int, bool)>();
         List<(CChessman piece, int x, int y)> captureMoves = new List<(CChessman, int, int)>();
@@ -232,6 +239,7 @@ public class CBoardManager : MonoBehaviour
             // 이번 이동을 기록하여 반복 이동 방지
             lastMovedChessman = selectedChessman;
             lastMoveTarget = new Vector2(captureMove.x, captureMove.y);
+            Invoke("ShowDefeatUI", 2f);
         }
         // 2. 잡을 말이 없으면 일반적인 이동을 실행
         else if (validMoves.Count > 0)
@@ -296,7 +304,6 @@ public class CBoardManager : MonoBehaviour
         {
             if (!isWhiteTurn)
             {
-                Debug.Log("장전");
                 playerShooting.MoveAndReload();
             }
             CChessman targetChessman = Chessmans[x, y];
@@ -527,18 +534,23 @@ public class CBoardManager : MonoBehaviour
 
     public void EndGame()
     {
+        isWhiteTurn = false;
         foreach (GameObject go in activeChessman)
         {
             Destroy(go);
         }
         CBoardHighlights.instance.Hidehighlights();
         SpawnAllChessmans();
-        isWhiteTurn = false;
     }
 
     public void ShowResultUI()
     {
         stageResultUI.resultUI.SetActive(true);
+    }
+
+    public void ShowDefeatUI()
+    {
+        stageDefeatUI.defeatUI.SetActive(true);
     }
 
 }
