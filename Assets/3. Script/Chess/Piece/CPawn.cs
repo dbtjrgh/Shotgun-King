@@ -14,10 +14,15 @@ public class CPawn : CChessman
     public GameObject chessHp;
     public GameObject heartPrefab;
     public GameObject emptyHeartPrefab;
+    private Animator animator;
+    private float timer;
+    private float idleSwitchTime = 3.3f; // 애니메이션 전환 주기
+    private int currentIdleIndex = -1;
     #endregion
     private void Awake()
     {
         damagePool = FindObjectOfType<CUIDamagePool>(); // 데미지 풀 찾기
+        animator = GetComponent<Animator>();
     }
     private void Start()
     {
@@ -28,7 +33,30 @@ public class CPawn : CChessman
             pawnStatus.SetActive(false);
         }
         UpdateHealthUI();
+        cameraTransView = FindObjectOfType<CCameraTransView>();
+        timer = idleSwitchTime; // 타이머 초기화
+    }
 
+    private void Update()
+    {
+        if (cameraTransView == null)
+        {
+            return;
+        }
+        if (!cameraTransView.isInTopView)
+        {
+            Vector3 targetPosition = Camera.main.transform.position;
+            targetPosition.y = transform.position.y;  // y축은 고정된 상태로 LookAt 적용
+
+            transform.LookAt(targetPosition);
+        }
+        timer -= Time.deltaTime; // 타이머 감소
+
+        if (timer <= 0)
+        {
+            PlayRandomIdleAnimation();
+            timer = idleSwitchTime; // 타이머 리셋
+        }
     }
 
     private void UpdateHealthUI()
@@ -45,6 +73,23 @@ public class CPawn : CChessman
         {
             Instantiate(emptyHeartPrefab, chessHp.transform);
         }
+    }
+
+    private void PlayRandomIdleAnimation()
+    {
+        // 0부터 3까지의 랜덤 인덱스 생성 (Idle_1 ~ Idle_4)
+        int newIdleIndex = Random.Range(0, 4);
+
+        // 같은 애니메이션이 연속으로 실행되지 않도록 확인
+        if (newIdleIndex == currentIdleIndex)
+        {
+            newIdleIndex = (newIdleIndex + 1) % 4; // 같은 인덱스가 나올 경우 다음 인덱스로 변경
+        }
+
+        currentIdleIndex = newIdleIndex;
+
+        // Animator의 파라미터 설정
+        animator.SetTrigger($"Idle_{currentIdleIndex + 1}"); // Idle_1은 0이므로 +1
     }
     private void OnMouseEnter()
     {

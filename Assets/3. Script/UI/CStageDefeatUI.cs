@@ -12,11 +12,13 @@ public class CStageDefeatUI : MonoBehaviour
     public GameObject defeatUI;
 
     private bool previousDefeatUIState = false;
+    private CBoardManager boardManager;
 
     private void Awake()
     {
         yesButton.onClick.AddListener(YesButtonClick);
         noButton.onClick.AddListener(NoButtonButtonClick);
+        boardManager = FindAnyObjectByType<CBoardManager>();
     }
 
     private void Update()
@@ -38,7 +40,14 @@ public class CStageDefeatUI : MonoBehaviour
 
     private void YesButtonClick()
     {
-        defeatUI.SetActive(false);
+        if (boardManager.isTutorial)
+        {
+            SceneManager.LoadScene("TutorialScene");
+        }
+        else
+        {
+            SceneManager.LoadScene("Stage1-2Scene");
+        }
     }
 
     private void NoButtonButtonClick()

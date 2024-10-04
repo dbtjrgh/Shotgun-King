@@ -28,8 +28,23 @@ public class CBishop : CChessman
             bishopStatus.SetActive(false);
         }
         UpdateHealthUI();
+        cameraTransView = FindObjectOfType<CCameraTransView>();
     }
 
+    private void Update()
+    {
+        if (cameraTransView == null)
+        {
+            return;
+        }
+        if (!cameraTransView.isInTopView)
+        {
+            Vector3 targetPosition = Camera.main.transform.position;
+            targetPosition.y = transform.position.y;  // y축은 고정된 상태로 LookAt 적용
+
+            transform.LookAt(targetPosition);
+        }
+    }
     private void UpdateHealthUI()
     {
         foreach (Transform child in chessHp.transform)
@@ -45,7 +60,7 @@ public class CBishop : CChessman
             Instantiate(emptyHeartPrefab, chessHp.transform);
         }
     }
-    
+
     private void OnMouseEnter()
     {
         CChessUIManager.instance.ShowUI(bishopStatus);

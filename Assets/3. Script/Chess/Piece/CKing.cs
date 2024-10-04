@@ -8,7 +8,6 @@ public class CKing : CChessman
     public int health = 8; // 킹의 체력
     public int currentHealth; // 킹의 현재 체력
     private Rigidbody rb; // 킹의 Rigidbody 참조
-    private CCameraTransView cameraTransView;
     private bool isDead = false;
     public GameObject kingStatus;
     public GameObject chessHp;
@@ -29,13 +28,28 @@ public class CKing : CChessman
     {
         rb = GetComponent<Rigidbody>(); // Rigidbody 참조
         currentHealth = health;
-        if(kingStatus != null)
+        if (kingStatus != null)
         {
             kingStatus.SetActive(false);
         }
-        if(isWhite)
+        if (isWhite)
         {
             UpdateHealthUI();
+        }
+    }
+
+    private void Update()
+    {
+        if (cameraTransView == null)
+        {
+            return;
+        }
+        if (!cameraTransView.isInTopView && isWhite)
+        {
+            Vector3 targetPosition = Camera.main.transform.position;
+            targetPosition.y = transform.position.y;  // y축은 고정된 상태로 LookAt 적용
+
+            transform.LookAt(targetPosition);
         }
     }
     private void UpdateHealthUI()
@@ -59,13 +73,13 @@ public class CKing : CChessman
     {
         if (isWhite)
         {
-           CChessUIManager.instance.ShowUI(kingStatus);
+            CChessUIManager.instance.ShowUI(kingStatus);
         }
     }
 
     private void OnMouseExit()
     {
-        if(isWhite)
+        if (isWhite)
         {
             CChessUIManager.instance.HideUI(kingStatus);
         }
@@ -89,7 +103,7 @@ public class CKing : CChessman
             damageText.Initialize(transform, Vector3.up, damagePool);
         }
         currentHealth--; // 체력 1 감소
-        if(isWhite)
+        if (isWhite)
         {
             UpdateHealthUI();
         }
@@ -111,7 +125,7 @@ public class CKing : CChessman
         rb.AddForce(knockbackDirection * 50f, ForceMode.Impulse); // 힘을 가해 날아가게 함
 
         yield return new WaitForSeconds(2f); // 5초 대기 후
-        if(boardManager.isTutorial)
+        if (boardManager.isTutorial)
         {
             SceneManager.LoadScene("OpeningScene");
         }
@@ -119,27 +133,27 @@ public class CKing : CChessman
         {
             boardManager.stageFloor += 1;
         }
-        if(isWhite)
+        if (isWhite)
         {
             Destroy(gameObject);
             CBoardManager.instance.EndGame(); // 체력이 0이 되면 게임 종료 호출
-            if(boardManager.stageFloor == 1)
+            if (boardManager.stageFloor == 1)
             {
                 SceneManager.LoadScene("Stage1-2Scene");
             }
-            else if(boardManager.stageFloor == 3)
+            else if (boardManager.stageFloor == 3)
             {
                 SceneManager.LoadScene("Castle3StageScene");
             }
-            else if(boardManager.stageFloor == 4)
+            else if (boardManager.stageFloor == 4)
             {
                 SceneManager.LoadScene("Castle4StageScene");
             }
-            else if(boardManager.stageFloor == 5)
+            else if (boardManager.stageFloor == 5)
             {
                 SceneManager.LoadScene("Valcano5StageScene");
             }
-            else if(boardManager.stageFloor == 6)
+            else if (boardManager.stageFloor == 6)
             {
                 SceneManager.LoadScene("EnddingScene");
             }

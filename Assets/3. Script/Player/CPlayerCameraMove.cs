@@ -27,7 +27,7 @@ public class CPlayerCameraMove : MonoBehaviour
     private void Awake()
     {
         cameraTransView = FindObjectOfType<CCameraTransView>();
-        if(stageResultUI == null)
+        if (stageResultUI == null)
         {
             stageResultUI = FindAnyObjectByType<CStageResultUI>();
         }
@@ -40,6 +40,10 @@ public class CPlayerCameraMove : MonoBehaviour
 
     void Update()
     {
+        if (stageResultUI == null)
+        {
+            stageResultUI = FindAnyObjectByType<CStageResultUI>();
+        }
         if (cameraTransView.isInTopView)
         {
             return;

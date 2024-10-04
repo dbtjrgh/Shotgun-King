@@ -22,11 +22,27 @@ public class CKnight : CChessman
     {
         rb = GetComponent<Rigidbody>(); // Rigidbody 참조
         currentHealth = health;
-        if(knightStatus != null)
+        if (knightStatus != null)
         {
             knightStatus.SetActive(false);
         }
         UpdateHealthUI();
+        cameraTransView = FindObjectOfType<CCameraTransView>();
+    }
+
+    private void Update()
+    {
+        if (cameraTransView == null)
+        {
+            return;
+        }
+        if (!cameraTransView.isInTopView)
+        {
+            Vector3 targetPosition = Camera.main.transform.position;
+            targetPosition.y = transform.position.y;  // y축은 고정된 상태로 LookAt 적용
+
+            transform.LookAt(targetPosition);
+        }
     }
     private void UpdateHealthUI()
     {
@@ -134,5 +150,5 @@ public class CKnight : CChessman
             }
         }
     }
-    
+
 }

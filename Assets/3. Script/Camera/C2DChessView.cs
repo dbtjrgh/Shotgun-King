@@ -19,11 +19,11 @@ public class C2DChessView : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(1) && !cameraTransView.isInTopView)
         {
-            if(image.enabled)
+            if (image.enabled)
             {
                 image.enabled = false;
             }
-            else if(!image.enabled)
+            else if (!image.enabled)
             {
                 image.enabled = true;
             }
@@ -33,7 +33,7 @@ public class C2DChessView : MonoBehaviour
         {
             image.enabled = false;
         }
-        else if(Input.GetKeyDown(KeyCode.Space) && !cameraTransView.isInTopView)
+        else if (Input.GetKeyDown(KeyCode.Space) && !cameraTransView.isInTopView)
         {
             image.enabled = true;
         }

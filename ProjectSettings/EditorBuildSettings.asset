@@ -27,6 +27,9 @@ EditorBuildSettings:
     path: Assets/1. Scene/Valcano5StageScene.unity
     guid: e8b020c40d207734c9e841f1ab280474
   - enabled: 1
+    path: Assets/1. Scene/DefeatScene.unity
+    guid: 8043e7820b30eec4cb243853d1744e93
+  - enabled: 1
     path: Assets/1. Scene/EnddingScene.unity
     guid: c61896bc916886a4d9110fcbdb5ac5a2
   m_configObjects: {}

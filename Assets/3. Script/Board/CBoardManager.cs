@@ -48,7 +48,7 @@ public class CBoardManager : MonoBehaviour
 
     private void Awake()
     {
-        if(isTutorial)
+        if (isTutorial)
         {
             stageFloor = 0;
         }
@@ -235,9 +235,10 @@ public class CBoardManager : MonoBehaviour
         if (captureMoves.Count > 0)
         {
             // 잡았으므로 스테이지 초기화 및 플레이어 패배
-            if(isTutorial)
+            if (isTutorial)
             {
                 stageFloor = 0;
+                stageDefeatUI.defeatUI.SetActive(true);
             }
             else
             {
@@ -574,7 +575,7 @@ public class CBoardManager : MonoBehaviour
         }
         CBoardHighlights.instance.HideHighlights(); // 올바른 호출
         SpawnAllChessmans();
-        if(stageFloor != 0 && stageFloor != 1 && stageFloor != 6)
+        if (stageFloor != 0 && stageFloor != 1 && stageFloor != 6)
         {
             ShowResultUI();
         }
@@ -587,11 +588,10 @@ public class CBoardManager : MonoBehaviour
 
     public void ShowDefeatUI()
     {
-        if(stageFloor != 0)
+        if (stageFloor != 0)
         {
-            SceneManager.LoadScene("Stage1-2Scene");
+            SceneManager.LoadScene("DefeatScene");
         }
-        stageDefeatUI.defeatUI.SetActive(true);
     }
 
 }

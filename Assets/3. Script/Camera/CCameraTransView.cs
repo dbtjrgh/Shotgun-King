@@ -41,7 +41,7 @@ public class CCameraTransView : MonoBehaviour
     /// </summary>
     private void TryFindPlayerCinemachine()
     {
-        GameObject playerKing = GameObject.Find("PlayerKing(Clone)");
+        GameObject playerKing = GameObject.Find("Black King(Clone)");
         if (playerKing != null)
         {
             playerCinemachine = playerKing.GetComponentInChildren<CinemachineVirtualCamera>();

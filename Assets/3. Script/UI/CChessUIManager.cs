@@ -56,7 +56,7 @@ public class CChessUIManager : MonoBehaviour
     {
         if (uiElement != null)
         {
-            uiElement.SetActive(false); 
+            uiElement.SetActive(false);
         }
     }
 }

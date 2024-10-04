@@ -3075,6 +3075,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damagePool: {fileID: 0}
   isWhite: 0
+  cameraTransView: {fileID: 0}
   health: 8
   currentHealth: 0
   kingStatus: {fileID: 0}

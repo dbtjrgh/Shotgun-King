@@ -100,6 +100,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3fa84d8bdcf238d44ad0e9d1955cd8ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  damagePool: {fileID: 0}
   isWhite: 1
   health: 4
   currentHealth: 0
@@ -348,7 +349,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &271854688153709934
 MonoBehaviour:
   m_ObjectHideFlags: 0

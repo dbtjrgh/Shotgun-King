@@ -9,6 +9,8 @@ public class CChessman : MonoBehaviour
     public int CurrentX { get; private set; }
     public int CurrentY { get; private set; }
     public bool isWhite;
+
+    public CCameraTransView cameraTransView;
     #endregion
 
     public Material originalMaterial { get; set; }

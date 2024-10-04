@@ -34,7 +34,7 @@ public class CSingleton : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name == "EnddingScene" || scene.name == "TitleScene" && shouldDestroyInTitleScene)
+        if (scene.name == "EnddingScene" || scene.name == "TitleScene" || scene.name == "DefeatScene")
         {
             Destroy(gameObject);
         }

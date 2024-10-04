@@ -7,13 +7,13 @@ using UnityEngine.UI;
 
 public class CStoryManager : MonoBehaviour
 {
-    public Image storyImage;       
-    public TextMeshProUGUI storyText;         
-    public Sprite[] images;        
-    public string[] storyTexts;    
+    public Image storyImage;
+    public TextMeshProUGUI storyText;
+    public Sprite[] images;
+    public string[] storyTexts;
 
-    public float textSpeed = 0.05f; 
-    private int currentIndex = 0;   
+    public float textSpeed = 0.05f;
+    private int currentIndex = 0;
     private bool isTextComplete = false;
     private bool isSkippingText = false;
 
@@ -28,7 +28,7 @@ public class CStoryManager : MonoBehaviour
         {
             if (!isTextComplete)
             {
-                isSkippingText = true;  
+                isSkippingText = true;
             }
             else
             {
@@ -39,7 +39,7 @@ public class CStoryManager : MonoBehaviour
                 }
                 else
                 {
-                    SceneManager.LoadScene("TitleScene"); 
+                    SceneManager.LoadScene("TitleScene");
                 }
             }
         }

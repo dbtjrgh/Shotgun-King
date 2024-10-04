@@ -7,6 +7,7 @@ public class CCrosshair : MonoBehaviour
 {
     #region º¯¼ö
     private CCameraTransView cameraTransView;
+    private CPlayerShooting playerShooting;
     private RawImage image;
     #endregion
 
@@ -14,9 +15,14 @@ public class CCrosshair : MonoBehaviour
     {
         cameraTransView = FindObjectOfType<CCameraTransView>();
         image = GetComponent<RawImage>();
+        playerShooting = FindObjectOfType<CPlayerShooting>();
     }
     private void Update()
     {
+        if (playerShooting == null)
+        {
+            image.enabled = false;
+        }
 
         if (cameraTransView.isInTopView)
         {

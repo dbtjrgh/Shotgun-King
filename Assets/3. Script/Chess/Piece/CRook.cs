@@ -11,8 +11,8 @@ public class CRook : CChessman
     private Rigidbody rb;
     private bool isDead = false;
     public GameObject rookStatus;
-    public GameObject chessHp;             
-    public GameObject heartPrefab;   
+    public GameObject chessHp;
+    public GameObject heartPrefab;
     public GameObject emptyHeartPrefab;
     #endregion
 
@@ -27,11 +27,26 @@ public class CRook : CChessman
         currentHealth = health;
         if (rookStatus != null)
         {
-            rookStatus.SetActive(false); 
+            rookStatus.SetActive(false);
         }
         UpdateHealthUI();
+        cameraTransView = FindObjectOfType<CCameraTransView>();
     }
 
+    private void Update()
+    {
+        if (cameraTransView == null)
+        {
+            return;
+        }
+        if (!cameraTransView.isInTopView)
+        {
+            Vector3 targetPosition = Camera.main.transform.position;
+            targetPosition.y = transform.position.y;  // y축은 고정된 상태로 LookAt 적용
+
+            transform.LookAt(targetPosition);
+        }
+    }
     private void UpdateHealthUI()
     {
         foreach (Transform child in chessHp.transform)
@@ -41,12 +56,12 @@ public class CRook : CChessman
 
         for (int i = 0; i < currentHealth; i++)
         {
-            Instantiate(heartPrefab, chessHp.transform); 
+            Instantiate(heartPrefab, chessHp.transform);
         }
 
         for (int i = 0; i < (health - currentHealth); i++)
         {
-            Instantiate(emptyHeartPrefab, chessHp.transform); 
+            Instantiate(emptyHeartPrefab, chessHp.transform);
         }
     }
     private void OnMouseEnter()

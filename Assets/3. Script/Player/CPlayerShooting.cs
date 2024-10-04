@@ -54,17 +54,9 @@ public class CPlayerShooting : MonoBehaviour
     private void Awake()
     {
         cameraTransView = FindObjectOfType<CCameraTransView>();
-        if (stageResultUI == null)
-        {
-            stageResultUI = FindAnyObjectByType<CStageResultUI>();
-        }
-        if(stageDefeatUI == null)
-        {
-            stageDefeatUI = FindAnyObjectByType<CStageDefeatUI>();
-        }
         boardManager = FindObjectOfType<CBoardManager>();
-        optionBackButton.onClick.AddListener(ResumeGame);
-        backMainMenuButton.onClick.AddListener(BackMainMenu);
+        optionBackButton.onClick.AddListener(ResumeGameButton);
+        backMainMenuButton.onClick.AddListener(BackMainMenuButton);
     }
 
     private void Start()
@@ -76,13 +68,26 @@ public class CPlayerShooting : MonoBehaviour
     {
         MinshotgunDistance = MaxshotgunDistance - 2;
         VisualizeShotgunSpread();
-        if(boardManager.isTutorial)
+        if (boardManager == null)
+        {
+            boardManager = FindObjectOfType<CBoardManager>();
+        }
+        if (stageResultUI == null)
+        {
+            stageResultUI = FindAnyObjectByType<CStageResultUI>();
+        }
+
+        if (stageDefeatUI == null)
+        {
+            stageDefeatUI = FindAnyObjectByType<CStageDefeatUI>();
+        }
+        if (boardManager.isTutorial)
         {
             stageFloor.text = ($"현재 층 : <color=red>튜토리얼 층");
         }
         else
         {
-            stageFloor.text = ($"현재 층 : <color=red>{ boardManager.stageFloor}층");
+            stageFloor.text = ($"현재 층 : <color=red>{boardManager.stageFloor}층");
         }
 
         if (cameraTransView.isInTopView)
@@ -90,12 +95,7 @@ public class CPlayerShooting : MonoBehaviour
             return;
         }
 
-        if(stageResultUI.resultUI.activeSelf)
-        {
-            return;
-        }
-
-        if(stageDefeatUI.defeatUI.activeSelf)
+        if (stageResultUI.resultUI.activeSelf)
         {
             return;
         }
@@ -105,11 +105,11 @@ public class CPlayerShooting : MonoBehaviour
         {
             if (isPaused)
             {
-                ResumeGame();
+                ResumeGameButton();
             }
             else
             {
-                PauseGame();
+                PauseGameButton();
             }
         }
 
@@ -280,7 +280,7 @@ public class CPlayerShooting : MonoBehaviour
     }
 
     // 게임 일시 정지
-    public void PauseGame()
+    public void PauseGameButton()
     {
         optionMenuUI.SetActive(true); // 옵션 메뉴 활성화
         Time.timeScale = 0f; // 게임 일시 정지
@@ -289,7 +289,7 @@ public class CPlayerShooting : MonoBehaviour
     }
 
     // 게임 재개
-    public void ResumeGame()
+    public void ResumeGameButton()
     {
         optionMenuUI.SetActive(false); // 옵션 메뉴 비활성화
         Time.timeScale = 1f; // 게임 재개
@@ -298,8 +298,12 @@ public class CPlayerShooting : MonoBehaviour
     }
 
     // 게임 종료
-    public void BackMainMenu()
+    public void BackMainMenuButton()
     {
+        optionMenuUI.SetActive(false); // 옵션 메뉴 비활성화
+        Time.timeScale = 1f; // 게임 재개
+        isPaused = false;
+        Cursor.lockState = CursorLockMode.Locked; // 마우스 커서 비활성화
         SceneManager.LoadScene("TitleScene");
     }
 }
