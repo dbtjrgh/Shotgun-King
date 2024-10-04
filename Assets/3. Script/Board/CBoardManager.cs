@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CBoardManager : MonoBehaviour
 {
@@ -41,11 +42,20 @@ public class CBoardManager : MonoBehaviour
     public bool isWhiteTurn;
 
     public int stageFloor;
+
+    public bool isTutorial;
     #endregion
 
     private void Awake()
     {
-        stageFloor = 1;
+        if(isTutorial)
+        {
+            stageFloor = 0;
+        }
+        else
+        {
+            stageFloor = 1;
+        }
         isWhiteTurn = false;
         cameraTransView = FindObjectOfType<CCameraTransView>();
         stageResultUI = FindAnyObjectByType<CStageResultUI>();
@@ -157,7 +167,7 @@ public class CBoardManager : MonoBehaviour
                 }
             }
 
-            CBoardHighlights.instance.Hidehighlights();
+            CBoardHighlights.instance.HideHighlights();
             selectedChessman = null;
         }
     }
@@ -173,7 +183,7 @@ public class CBoardManager : MonoBehaviour
             {
                 renderer.material = selectedChessman.originalMaterial; // 원래 재질로 복원
             }
-            CBoardHighlights.instance.Hidehighlights(); // 강조 표시 숨김
+            CBoardHighlights.instance.HideHighlights(); // 강조 표시 숨김
             selectedChessman = null; // 선택된 체스말 초기화
         }
     }
@@ -225,7 +235,14 @@ public class CBoardManager : MonoBehaviour
         if (captureMoves.Count > 0)
         {
             // 잡았으므로 스테이지 초기화 및 플레이어 패배
-            stageFloor = 1;
+            if(isTutorial)
+            {
+                stageFloor = 0;
+            }
+            else
+            {
+                stageFloor = 1;
+            }
             Debug.Log("화이트 윈");
             var captureMove = captureMoves[UnityEngine.Random.Range(0, captureMoves.Count)];  // 잡을 수 있는 말 중 하나를 랜덤으로 선택
             selectedChessman = captureMove.piece;
@@ -342,7 +359,7 @@ public class CBoardManager : MonoBehaviour
         }
 
 
-        CBoardHighlights.instance.Hidehighlights();
+        CBoardHighlights.instance.HideHighlights();
         selectedChessman = null;
     }
 
@@ -392,6 +409,22 @@ public class CBoardManager : MonoBehaviour
         // 스테이지 별 스폰 관리
         switch (stageFloor)
         {
+            case 0: // 킹1, 비숍1, 나이트1, 폰2
+                shotgunDamage = 10;
+                MaxshotgunDistance = 6;
+                shotAngle = 55;
+                // 킹
+                SpawnChessMan(0, 4, 0);
+                // 비숍
+                SpawnChessMan(3, 5, 0);
+                // 나이트
+                SpawnChessMan(4, 3, 0);
+                // 폰
+                for (int i = 3; i < 5; i++)
+                {
+                    SpawnChessMan(5, i, 1); // z축으로 폰 배치
+                }
+                break;
             case 1: // 킹1, 비숍1, 나이트1, 폰4
                 shotgunDamage = 4;
                 MaxshotgunDistance = 5;
@@ -539,8 +572,12 @@ public class CBoardManager : MonoBehaviour
         {
             Destroy(go);
         }
-        CBoardHighlights.instance.Hidehighlights();
+        CBoardHighlights.instance.HideHighlights(); // 올바른 호출
         SpawnAllChessmans();
+        if(stageFloor != 0 && stageFloor != 1 && stageFloor != 6)
+        {
+            ShowResultUI();
+        }
     }
 
     public void ShowResultUI()
@@ -550,6 +587,10 @@ public class CBoardManager : MonoBehaviour
 
     public void ShowDefeatUI()
     {
+        if(stageFloor != 0)
+        {
+            SceneManager.LoadScene("Stage1-2Scene");
+        }
         stageDefeatUI.defeatUI.SetActive(true);
     }
 

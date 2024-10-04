@@ -14,18 +14,30 @@ public class CBoardHighlights : MonoBehaviour
     {
         instance = this;
         highlights = new List<GameObject>();
+        InitializeHighlights(); // 강조 표시 초기화
+    }
+
+    // 강조 표시를 초기화하는 함수
+    private void InitializeHighlights()
+    {
+        HideHighlights(); // 이전의 강조 표시 숨기기
+        highlights.Clear(); // 이전 하이라이트 오브젝트 리스트 비우기
     }
 
     // 강조된 이동 위치를 표시하는 함수
     public void HighlightAllowedMoves(bool[,] moves)
     {
-        for (int i = 0; i < 8; i++)
+        // instance가 유효한지 확인 후 강조 작업 수행
+        if (CBoardHighlights.instance != null)
         {
-            for (int j = 0; j < 8; j++)
+            for (int i = 0; i < 8; i++)
             {
-                if (moves[i, j])
+                for (int j = 0; j < 8; j++)
                 {
-                    HighlightTile(i, j); // 가능한 이동 위치에 강조 표시
+                    if (moves[i, j])
+                    {
+                        HighlightTile(i, j); // 가능한 이동 위치에 강조 표시
+                    }
                 }
             }
         }
@@ -46,15 +58,20 @@ public class CBoardHighlights : MonoBehaviour
 
         if (go == null)
         {
-            go = Instantiate(highlightPrefab);
+            // highlightPrefab을 현재 오브젝트의 자식으로 생성
+            go = Instantiate(highlightPrefab, this.transform);
             highlights.Add(go);
+        }
+        else
+        {
+            go.SetActive(true); // 사용 가능한 오브젝트를 활성화
         }
 
         return go;
     }
 
     // 강조 표시 숨기기
-    public void Hidehighlights()
+    public void HideHighlights()
     {
         foreach (GameObject go in highlights)
         {

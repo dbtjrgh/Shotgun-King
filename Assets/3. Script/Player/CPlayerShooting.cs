@@ -2,7 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using UnityEngine.UIElements;
+using Cursor = UnityEngine.Cursor;
 
 public class CPlayerShooting : MonoBehaviour
 {
@@ -40,6 +43,12 @@ public class CPlayerShooting : MonoBehaviour
     public int currentBullets = 6; // 현재 플레이어가 가지고 있는 총알 수
     public int maxLoadedBullets = 2; // 샷건에 장전 가능한 최대 총알 수
     public int loadedBullets = 2; // 현재 장전된 총알 수
+
+    // 옵션 메뉴
+    public GameObject optionMenuUI; // 옵션 메뉴 UI
+    public UnityEngine.UI.Button optionBackButton;
+    public UnityEngine.UI.Button backMainMenuButton;
+    private bool isPaused = false; // 게임 일시 정지 상태
     #endregion
 
     private void Awake()
@@ -54,6 +63,8 @@ public class CPlayerShooting : MonoBehaviour
             stageDefeatUI = FindAnyObjectByType<CStageDefeatUI>();
         }
         boardManager = FindObjectOfType<CBoardManager>();
+        optionBackButton.onClick.AddListener(ResumeGame);
+        backMainMenuButton.onClick.AddListener(BackMainMenu);
     }
 
     private void Start()
@@ -65,7 +76,14 @@ public class CPlayerShooting : MonoBehaviour
     {
         MinshotgunDistance = MaxshotgunDistance - 2;
         VisualizeShotgunSpread();
-        stageFloor.text = ($"현재 층 : <color=red>{ boardManager.stageFloor}층");
+        if(boardManager.isTutorial)
+        {
+            stageFloor.text = ($"현재 층 : <color=red>튜토리얼 층");
+        }
+        else
+        {
+            stageFloor.text = ($"현재 층 : <color=red>{ boardManager.stageFloor}층");
+        }
 
         if (cameraTransView.isInTopView)
         {
@@ -80,6 +98,19 @@ public class CPlayerShooting : MonoBehaviour
         if(stageDefeatUI.defeatUI.activeSelf)
         {
             return;
+        }
+
+        // ESC 키를 눌러 옵션 메뉴 토글
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (isPaused)
+            {
+                ResumeGame();
+            }
+            else
+            {
+                PauseGame();
+            }
         }
 
         if (Input.GetMouseButtonDown(0) && loadedBullets > 0 && !boardManager.isWhiteTurn)
@@ -246,5 +277,29 @@ public class CPlayerShooting : MonoBehaviour
             currentBullets++;
         }
         UpdateBulletUI();
+    }
+
+    // 게임 일시 정지
+    public void PauseGame()
+    {
+        optionMenuUI.SetActive(true); // 옵션 메뉴 활성화
+        Time.timeScale = 0f; // 게임 일시 정지
+        isPaused = true;
+        Cursor.lockState = CursorLockMode.None; // 마우스 커서 활성화
+    }
+
+    // 게임 재개
+    public void ResumeGame()
+    {
+        optionMenuUI.SetActive(false); // 옵션 메뉴 비활성화
+        Time.timeScale = 1f; // 게임 재개
+        isPaused = false;
+        Cursor.lockState = CursorLockMode.Locked; // 마우스 커서 비활성화
+    }
+
+    // 게임 종료
+    public void BackMainMenu()
+    {
+        SceneManager.LoadScene("TitleScene");
     }
 }

@@ -40,12 +40,14 @@ public class CTitleManager : MonoBehaviour
 
         titleUI.SetActive(true);
         gameStartUI.SetActive(false);
+        Cursor.lockState = CursorLockMode.Confined;
     }
 
     public void OnStartButtonClick()
     {
         // SceneManager.LoadScene("Forest 1~3 Stage");
         gameStartUI.SetActive(true);
+        titleUI.SetActive(false);
     }
 
     public void OnOptionButtonClick()
@@ -61,12 +63,13 @@ public class CTitleManager : MonoBehaviour
 
     public void OnStageStartButtonClick()
     {
-        SceneManager.LoadScene("Forest 1~3 Stage");
+        SceneManager.LoadScene("Stage1-2Scene");
     }
     
     public void OnTutorialStartButtonClick()
     {
 
+        SceneManager.LoadScene("TutorialScene");
     }
 
     public void OnBackButtonClick()

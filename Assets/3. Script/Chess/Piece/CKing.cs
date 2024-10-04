@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CKing : CChessman
 {
@@ -110,12 +111,38 @@ public class CKing : CChessman
         rb.AddForce(knockbackDirection * 50f, ForceMode.Impulse); // 힘을 가해 날아가게 함
 
         yield return new WaitForSeconds(2f); // 5초 대기 후
-        boardManager.stageFloor += 1;
+        if(boardManager.isTutorial)
+        {
+            SceneManager.LoadScene("OpeningScene");
+        }
+        else
+        {
+            boardManager.stageFloor += 1;
+        }
         if(isWhite)
         {
             Destroy(gameObject);
             CBoardManager.instance.EndGame(); // 체력이 0이 되면 게임 종료 호출
-            CBoardManager.instance.ShowResultUI();
+            if(boardManager.stageFloor == 1)
+            {
+                SceneManager.LoadScene("Stage1-2Scene");
+            }
+            else if(boardManager.stageFloor == 3)
+            {
+                SceneManager.LoadScene("Castle3StageScene");
+            }
+            else if(boardManager.stageFloor == 4)
+            {
+                SceneManager.LoadScene("Castle4StageScene");
+            }
+            else if(boardManager.stageFloor == 5)
+            {
+                SceneManager.LoadScene("Valcano5StageScene");
+            }
+            else if(boardManager.stageFloor == 6)
+            {
+                SceneManager.LoadScene("EnddingScene");
+            }
 
         }
     }
