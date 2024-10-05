@@ -113,7 +113,7 @@ public class CPlayerShooting : MonoBehaviour
             }
         }
 
-        if (Input.GetMouseButtonDown(0) && loadedBullets > 0 && !boardManager.isWhiteTurn)
+        if (Input.GetMouseButtonDown(0) && loadedBullets > 0 && !boardManager.isWhiteTurn && !optionMenuUI.activeSelf)
         {
             CSoundManager.Instance.PlaySfx(5);
             // ÃÑÀ» ½ú´Ù¸é ÅÏ ³Ñ±â±â
