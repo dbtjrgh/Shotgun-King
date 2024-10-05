@@ -46,7 +46,7 @@ public class CStageDefeatUI : MonoBehaviour
         }
         else
         {
-            SceneManager.LoadScene("Stage1-2Scene");
+            SceneManager.LoadScene("island1-2StageScene");
         }
     }
 

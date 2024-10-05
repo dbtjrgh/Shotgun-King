@@ -320,6 +320,8 @@ public class CBoardManager : MonoBehaviour
     {
         if (allowedMoves != null && allowedMoves[x, y])
         {
+
+            CSoundManager.Instance.PlaySfx(6);
             if (!isWhiteTurn)
             {
                 playerShooting.MoveAndReload();

@@ -52,8 +52,9 @@ public class CSoundManager : MonoBehaviour
         {
             { "TitleScene", bgmClips[0] },  // TitleScene에 첫 번째 BGM
             { "TutorialScene", bgmClips[1] },    // TutorialScene 씬에 두 번째 BGM
-            { "Stage1-2Scene", bgmClips[2] },  // Stage1-2Scene 씬에 세 번째 BGM
-            { "Valcano5StageScene", bgmClips[3] }  // Valcano5StageScene 씬에 4 번째 BGM
+            { "island1-2StageScene", bgmClips[2] },  // island1-2StageScene 씬에 세 번째 BGM
+            { "Valcano5StageScene", bgmClips[3] },  // Valcano5StageScene 씬에 4 번째 BGM
+            { "EnddingScene", bgmClips[4] }  // EnddingScene 씬에 5 번째 BGM
         };
     }
 

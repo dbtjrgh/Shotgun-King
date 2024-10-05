@@ -53,6 +53,7 @@ public class CTitleManager : MonoBehaviour
         // 아무 키나 누르면 titleUI 활성화
         if (isBlinking && Input.anyKeyDown)
         {
+            CSoundManager.Instance.PlaySfx(0);
             isBlinking = false; // 깜빡임 중지
             StopCoroutine(BlinkText()); // 깜빡임 코루틴 중지
             titleUI.SetActive(true); // titleUI 활성화
@@ -70,42 +71,52 @@ public class CTitleManager : MonoBehaviour
 
     public void OnStartButtonClick()
     {
-        // SceneManager.LoadScene("Forest 1~3 Stage");
+        CSoundManager.Instance.PlaySfx(1);
         gameStartUI.SetActive(true);
         titleUI.SetActive(false);
     }
 
     public void OnOptionButtonClick()
     {
+        CSoundManager.Instance.PlaySfx(1);
         optionUI.SetActive(true);
     }
 
     public void OnQuitButtonClick()
     {
+        CSoundManager.Instance.PlaySfx(2);
         Application.Quit();
     }
 
 
     public void OnStageStartButtonClick()
     {
-        SceneManager.LoadScene("Stage1-2Scene");
+        CSoundManager.Instance.PlaySfx(1);
+        SceneManager.LoadScene("island1-2StageScene");
     }
 
     public void OnTutorialStartButtonClick()
     {
-
+        CSoundManager.Instance.PlaySfx(1);
         SceneManager.LoadScene("TutorialScene");
     }
 
     public void OnBackButtonClick()
     {
+        CSoundManager.Instance.PlaySfx(2);
         gameStartUI.SetActive(false);
         titleUI.SetActive(true);
     }
 
     public void OnOptionBackButton()
     {
+        CSoundManager.Instance.PlaySfx(3);
         optionUI.SetActive(false);
+    }
+
+    public void PointerEnter()
+    {
+        CSoundManager.Instance.PlaySfx(7);
     }
 
 }

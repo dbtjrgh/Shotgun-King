@@ -97,6 +97,7 @@ public class CRook : CChessman
     // 죽을 때 날아가는 연출과 파괴 처리
     private void Die(Collision collision)
     {
+        CSoundManager.Instance.PlaySfx(8);
         isDead = true; // 이미 죽은 상태로 표시
         rb.isKinematic = false; // 물리 효과 적용
 

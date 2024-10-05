@@ -115,6 +115,7 @@ public class CPlayerShooting : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0) && loadedBullets > 0 && !boardManager.isWhiteTurn)
         {
+            CSoundManager.Instance.PlaySfx(5);
             // 총을 쐈다면 턴 넘기기
             boardManager.isWhiteTurn = true;
             camAnim.Play(camAnim.clip.name);
@@ -235,6 +236,7 @@ public class CPlayerShooting : MonoBehaviour
     // 장전 함수
     private void Reload()
     {
+        CSoundManager.Instance.PlaySfx(4);
         // 현재 가지고 있는 총알 중에서 샷건에 장전할 총알 수 계산
         int bulletsToLoad = Mathf.Min(maxLoadedBullets - loadedBullets, currentBullets);
         loadedBullets += bulletsToLoad;
@@ -291,6 +293,7 @@ public class CPlayerShooting : MonoBehaviour
     // 게임 재개
     public void ResumeGameButton()
     {
+        CSoundManager.Instance.PlaySfx(3);
         optionMenuUI.SetActive(false); // 옵션 메뉴 비활성화
         Time.timeScale = 1f; // 게임 재개
         isPaused = false;
@@ -300,6 +303,7 @@ public class CPlayerShooting : MonoBehaviour
     // 게임 종료
     public void BackMainMenuButton()
     {
+        CSoundManager.Instance.PlaySfx(2);
         optionMenuUI.SetActive(false); // 옵션 메뉴 비활성화
         Time.timeScale = 1f; // 게임 재개
         isPaused = false;
