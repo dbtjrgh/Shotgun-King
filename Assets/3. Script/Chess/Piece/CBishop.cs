@@ -39,7 +39,7 @@ public class CBishop : CChessman
         }
         if (!cameraTransView.isInTopView)
         {
-            Vector3 targetPosition = Camera.main.transform.position;
+            Vector3 targetPosition = cameraTransView.playerCinemachine.transform.position;
             targetPosition.y = transform.position.y;  // y축은 고정된 상태로 LookAt 적용
 
             transform.LookAt(targetPosition);
