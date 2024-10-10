@@ -41,9 +41,9 @@ public class CPawn : CChessman
     {
         if (cameraTransView == null)
         {
-            return;
+            cameraTransView = FindObjectOfType<CCameraTransView>();
         }
-        if (!cameraTransView.isInTopView)
+        else if (!cameraTransView.isInTopView && cameraTransView.playerCinemachine != null)
         {
             Vector3 targetPosition = cameraTransView.playerCinemachine.transform.position;
             targetPosition.y = transform.position.y;  // y축은 고정된 상태로 LookAt 적용
@@ -159,7 +159,7 @@ public class CPawn : CChessman
                 {
                     r[i - 1, j + 1] = true;
                 }
-                c = CBoardManager.instance.Chessmans[i - 1, j + 1];
+                c = CBoardManager.instance.chessMans[i - 1, j + 1];
                 if (c != null && !c.isWhite)
                 {
                     r[i - 1, j + 1] = true;
@@ -173,7 +173,7 @@ public class CPawn : CChessman
                 {
                     r[i - 1, j + 1] = true;
                 }
-                c = CBoardManager.instance.Chessmans[i + 1, j + 1];
+                c = CBoardManager.instance.chessMans[i + 1, j + 1];
                 if (c != null && !c.isWhite)
                 {
                     r[i + 1, j + 1] = true;
@@ -183,7 +183,7 @@ public class CPawn : CChessman
             // Middle
             if (j != 7)
             {
-                c = CBoardManager.instance.Chessmans[i, j + 1];
+                c = CBoardManager.instance.chessMans[i, j + 1];
                 if (c == null)
                 {
                     r[i, j + 1] = true;
@@ -193,8 +193,8 @@ public class CPawn : CChessman
             // Middle on first move
             if (j == 1)
             {
-                c = CBoardManager.instance.Chessmans[i, j + 1];
-                c2 = CBoardManager.instance.Chessmans[i, j + 2];
+                c = CBoardManager.instance.chessMans[i, j + 1];
+                c2 = CBoardManager.instance.chessMans[i, j + 2];
                 if (c == null && c2 == null)
                 {
                     r[i, j + 2] = true;
@@ -210,7 +210,7 @@ public class CPawn : CChessman
                 {
                     r[i - 1, j - 1] = true;
                 }
-                c = CBoardManager.instance.Chessmans[i - 1, j - 1];
+                c = CBoardManager.instance.chessMans[i - 1, j - 1];
                 if (c != null && c.isWhite)
                 {
                     r[i - 1, j - 1] = true;
@@ -224,7 +224,7 @@ public class CPawn : CChessman
                 {
                     r[i + 1, j - 1] = true;
                 }
-                c = CBoardManager.instance.Chessmans[i + 1, j - 1];
+                c = CBoardManager.instance.chessMans[i + 1, j - 1];
                 if (c != null && c.isWhite)
                 {
                     r[i + 1, j - 1] = true;
@@ -234,7 +234,7 @@ public class CPawn : CChessman
             // Middle
             if (j != 0)
             {
-                c = CBoardManager.instance.Chessmans[i, j - 1];
+                c = CBoardManager.instance.chessMans[i, j - 1];
                 if (c == null)
                 {
                     r[i, j - 1] = true;
@@ -244,8 +244,8 @@ public class CPawn : CChessman
             // Middle on first move
             if (j == 6)
             {
-                c = CBoardManager.instance.Chessmans[i, j - 1];
-                c2 = CBoardManager.instance.Chessmans[i, j - 2];
+                c = CBoardManager.instance.chessMans[i, j - 1];
+                c2 = CBoardManager.instance.chessMans[i, j - 2];
                 if (c == null && c2 == null)
                 {
                     r[i, j - 2] = true;

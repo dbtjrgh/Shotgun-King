@@ -35,9 +35,9 @@ public class CBishop : CChessman
     {
         if (cameraTransView == null)
         {
-            return;
+            cameraTransView = FindObjectOfType<CCameraTransView>();
         }
-        if (!cameraTransView.isInTopView)
+        else if (!cameraTransView.isInTopView && cameraTransView.playerCinemachine != null)
         {
             Vector3 targetPosition = cameraTransView.playerCinemachine.transform.position;
             targetPosition.y = transform.position.y;  // y축은 고정된 상태로 LookAt 적용
@@ -128,7 +128,7 @@ public class CBishop : CChessman
             {
                 break;
             }
-            c = CBoardManager.instance.Chessmans[i, j];
+            c = CBoardManager.instance.chessMans[i, j];
             if (c == null)
             {
                 r[i, j] = true;
@@ -154,7 +154,7 @@ public class CBishop : CChessman
             {
                 break;
             }
-            c = CBoardManager.instance.Chessmans[i, j];
+            c = CBoardManager.instance.chessMans[i, j];
             if (c == null)
             {
                 r[i, j] = true;
@@ -180,7 +180,7 @@ public class CBishop : CChessman
             {
                 break;
             }
-            c = CBoardManager.instance.Chessmans[i, j];
+            c = CBoardManager.instance.chessMans[i, j];
             if (c == null)
             {
                 r[i, j] = true;
@@ -205,7 +205,7 @@ public class CBishop : CChessman
             {
                 break;
             }
-            c = CBoardManager.instance.Chessmans[i, j];
+            c = CBoardManager.instance.chessMans[i, j];
             if (c == null)
             {
                 r[i, j] = true;

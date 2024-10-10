@@ -37,9 +37,9 @@ public class CRook : CChessman
     {
         if (cameraTransView == null)
         {
-            return;
+            cameraTransView = FindObjectOfType<CCameraTransView>();
         }
-        if (!cameraTransView.isInTopView)
+        else if (!cameraTransView.isInTopView && cameraTransView.playerCinemachine != null)
         {
             Vector3 targetPosition = cameraTransView.playerCinemachine.transform.position;
             targetPosition.y = transform.position.y;  // y축은 고정된 상태로 LookAt 적용
@@ -121,7 +121,7 @@ public class CRook : CChessman
             if (i >= 8)
                 break;
 
-            c = CBoardManager.instance.Chessmans[i, CurrentY];
+            c = CBoardManager.instance.chessMans[i, CurrentY];
             if (c == null)
             {
                 r[i, CurrentY] = true;  // 빈 칸
@@ -144,7 +144,7 @@ public class CRook : CChessman
             if (i < 0)
                 break;
 
-            c = CBoardManager.instance.Chessmans[i, CurrentY];
+            c = CBoardManager.instance.chessMans[i, CurrentY];
             if (c == null)
             {
                 r[i, CurrentY] = true;
@@ -167,7 +167,7 @@ public class CRook : CChessman
             if (i >= 8)
                 break;
 
-            c = CBoardManager.instance.Chessmans[CurrentX, i];
+            c = CBoardManager.instance.chessMans[CurrentX, i];
             if (c == null)
             {
                 r[CurrentX, i] = true;
@@ -190,7 +190,7 @@ public class CRook : CChessman
             if (i < 0)
                 break;
 
-            c = CBoardManager.instance.Chessmans[CurrentX, i];
+            c = CBoardManager.instance.chessMans[CurrentX, i];
             if (c == null)
             {
                 r[CurrentX, i] = true;

@@ -34,9 +34,9 @@ public class CKnight : CChessman
     {
         if (cameraTransView == null)
         {
-            return;
+            cameraTransView = FindObjectOfType<CCameraTransView>();
         }
-        if (!cameraTransView.isInTopView)
+        else if (!cameraTransView.isInTopView && cameraTransView.playerCinemachine != null)
         {
             Vector3 targetPosition = cameraTransView.playerCinemachine.transform.position;
             targetPosition.y = transform.position.y;  // y축은 고정된 상태로 LookAt 적용
@@ -140,7 +140,7 @@ public class CKnight : CChessman
         CChessman c;
         if (x >= 0 && x < 8 && y >= 0 && y < 8)
         {
-            c = CBoardManager.instance.Chessmans[x, y];
+            c = CBoardManager.instance.chessMans[x, y];
             if (c == null)
             {
                 r[x, y] = true;

@@ -42,9 +42,9 @@ public class CKing : CChessman
     {
         if (cameraTransView == null)
         {
-            return;
+            cameraTransView = FindObjectOfType<CCameraTransView>();
         }
-        if (!cameraTransView.isInTopView && isWhite)
+        else if (!cameraTransView.isInTopView && cameraTransView.playerCinemachine != null && isWhite)
         {
             Vector3 targetPosition = cameraTransView.playerCinemachine.transform.position;
             targetPosition.y = transform.position.y;  // y축은 고정된 상태로 LookAt 적용
@@ -178,7 +178,7 @@ public class CKing : CChessman
             {
                 if (i != -1 && j != 8 && i != 8)
                 {
-                    c = CBoardManager.instance.Chessmans[i, j];
+                    c = CBoardManager.instance.chessMans[i, j];
 
                     if (c == null)
                     {
@@ -202,7 +202,7 @@ public class CKing : CChessman
             {
                 if (i != -1 && j != -1 && i != 8)
                 {
-                    c = CBoardManager.instance.Chessmans[i, j];
+                    c = CBoardManager.instance.chessMans[i, j];
                     if (c == null)
                     {
                         r[i, j] = true;
@@ -219,7 +219,7 @@ public class CKing : CChessman
         // Middle Left
         if (CurrentX - 1 != -1)
         {
-            c = CBoardManager.instance.Chessmans[CurrentX - 1, CurrentY];
+            c = CBoardManager.instance.chessMans[CurrentX - 1, CurrentY];
             if (c == null)
             {
                 r[CurrentX - 1, CurrentY] = true;
@@ -233,7 +233,7 @@ public class CKing : CChessman
         // Middle Right
         if (CurrentX + 1 != 8)
         {
-            c = CBoardManager.instance.Chessmans[CurrentX + 1, CurrentY];
+            c = CBoardManager.instance.chessMans[CurrentX + 1, CurrentY];
             if (c == null)
             {
                 r[CurrentX + 1, CurrentY] = true;
