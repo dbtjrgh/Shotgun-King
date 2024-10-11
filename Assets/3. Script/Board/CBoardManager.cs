@@ -455,7 +455,7 @@ public class CBoardManager : MonoBehaviour
                 }
                 break;
             case 1: // 킹1, 비숍1, 나이트1, 폰4
-                shotgunDamage = 4;
+                shotgunDamage = 6;
                 MaxshotgunDistance = 5;
                 shotAngle = 55;
                 SpawnChessMan(0, 4, 0); // 킹
