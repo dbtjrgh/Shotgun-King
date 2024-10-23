@@ -6,28 +6,23 @@ using UnityEngine;
 public class CRook : CChessman
 {
     #region 변수
-    public int health = 5;
-    public int currentHealth;
     private Rigidbody rb;
     private bool isDead = false;
-    public GameObject rookStatus;
-    public GameObject chessHp;
-    public GameObject heartPrefab;
-    public GameObject emptyHeartPrefab;
     #endregion
 
     private void Awake()
     {
         damagePool = FindObjectOfType<CUIDamagePool>(); // 데미지 풀 찾기
+        health = 5;
     }
 
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
         currentHealth = health;
-        if (rookStatus != null)
+        if (Status != null)
         {
-            rookStatus.SetActive(false);
+            Status.SetActive(false);
         }
         UpdateHealthUI();
         cameraTransView = FindObjectOfType<CCameraTransView>();
@@ -66,12 +61,12 @@ public class CRook : CChessman
     }
     private void OnMouseEnter()
     {
-        CChessUIManager.instance.ShowUI(rookStatus);
+        CChessUIManager.instance.ShowUI(Status);
     }
 
     private void OnMouseExit()
     {
-        CChessUIManager.instance.HideUI(rookStatus);
+        CChessUIManager.instance.HideUI(Status);
     }
 
     private void OnCollisionEnter(Collision collision)

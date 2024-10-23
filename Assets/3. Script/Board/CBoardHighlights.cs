@@ -10,21 +10,26 @@ public class CBoardHighlights : MonoBehaviour
     private List<GameObject> highlights;
     #endregion
 
-    private void Awake()
+    void Awake()
     {
         instance = this;
         highlights = new List<GameObject>();
         InitializeHighlights(); // 강조 표시 초기화
     }
 
-    // 강조 표시를 초기화하는 함수
-    private void InitializeHighlights()
+    /// <summary>
+    /// 강조 표시를 초기화하는 함수
+    /// </summary>
+    void InitializeHighlights()
     {
         HideHighlights(); // 이전의 강조 표시 숨기기
         highlights.Clear(); // 이전 하이라이트 오브젝트 리스트 비우기
     }
 
-    // 강조된 이동 위치를 표시하는 함수
+    /// <summary>
+    /// 강조된 이동 위치를 표시하는 함수
+    /// </summary>
+    /// <param name="moves"></param>
     public void HighlightAllowedMoves(bool[,] moves)
     {
         // instance가 유효한지 확인 후 강조 작업 수행
@@ -43,16 +48,23 @@ public class CBoardHighlights : MonoBehaviour
         }
     }
 
-    // 타일 강조 표시
-    private void HighlightTile(int x, int y)
+    /// <summary>
+    /// 타일 강조 표시
+    /// </summary>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    void HighlightTile(int x, int y)
     {
         GameObject go = GetHighlightObject();
         go.SetActive(true);
         go.transform.position = new Vector3(x + 0.5f, 0.01f, y + 0.5f);
     }
 
-    // 강조 표시 오브젝트를 가져옴
-    private GameObject GetHighlightObject()
+    /// <summary>
+    /// 강조 표시 오브젝트를 가져옴
+    /// </summary>
+    /// <returns></returns>
+    GameObject GetHighlightObject()
     {
         GameObject go = highlights.Find(g => !g.activeSelf);
 
@@ -70,25 +82,14 @@ public class CBoardHighlights : MonoBehaviour
         return go;
     }
 
-    // 강조 표시 숨기기
+    /// <summary>
+    /// 강조 표시 숨기기
+    /// </summary>
     public void HideHighlights()
     {
         foreach (GameObject go in highlights)
         {
             go.SetActive(false);
         }
-    }
-
-    // 특정 위치가 강조된 이동 위치인지 확인하는 메서드
-    public bool IsPositionHighlighted(Vector3 position)
-    {
-        foreach (GameObject highlight in highlights)
-        {
-            if (highlight.activeSelf && Vector3.Distance(highlight.transform.position, position) < 0.5f)
-            {
-                return true;
-            }
-        }
-        return false;
     }
 }

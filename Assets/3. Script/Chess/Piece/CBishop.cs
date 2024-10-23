@@ -5,27 +5,22 @@ using UnityEngine;
 public class CBishop : CChessman
 {
     #region 변수
-    public int health = 4;
-    public int currentHealth;
     private Rigidbody rb;
     private bool isDead = false;
-    public GameObject bishopStatus;
-    public GameObject chessHp;
-    public GameObject heartPrefab;
-    public GameObject emptyHeartPrefab;
     #endregion
     private void Awake()
     {
         damagePool = FindObjectOfType<CUIDamagePool>(); // 데미지 풀 찾기
+        health = 4;
     }
 
     private void Start()
     {
         rb = GetComponent<Rigidbody>(); // Rigidbody 참조
         currentHealth = health;
-        if (bishopStatus != null)
+        if (Status != null)
         {
-            bishopStatus.SetActive(false);
+            Status.SetActive(false);
         }
         UpdateHealthUI();
         cameraTransView = FindObjectOfType<CCameraTransView>();
@@ -63,12 +58,12 @@ public class CBishop : CChessman
 
     private void OnMouseEnter()
     {
-        CChessUIManager.instance.ShowUI(bishopStatus);
+        CChessUIManager.instance.ShowUI(Status);
     }
 
     private void OnMouseExit()
     {
-        CChessUIManager.instance.HideUI(bishopStatus);
+        CChessUIManager.instance.HideUI(Status);
     }
 
 

@@ -18,20 +18,18 @@ public class CBoardManager : MonoBehaviour
     private int selectionX = -1;
     private int selectionY = -1;
     public List<GameObject> chessmanPrefabs;
-    public Material selectedMat;
 
     private CCameraTransView cameraTransView;
     private CPlayerShooting playerShooting;
     private CStageResultUI stageResultUI;
     private CStageDefeatUI stageDefeatUI;
     private List<GameObject> activeChessman;
-    private Material previousMat;
     private CChessman lastMovedChessman = null;
     private Vector2 lastMoveTarget = Vector2.negativeInfinity;
 
     public int shotgunDamage;
     public int MaxshotgunDistance;
-    public float shotAngle;
+    public float shotAngle; 
 
     public int[] EnPassantMove { get; set; }
     private bool kingSelected = false; // 킹이 선택되었는지 여부 확인
@@ -61,13 +59,13 @@ public class CBoardManager : MonoBehaviour
         instance = this;
         SpawnAllChessmans();
     }
-    private void Update()
+    void Update()
     {
         if (playerShooting == null)
         {
             playerShooting = FindObjectOfType<CPlayerShooting>();
         }
-        if (playerShooting != null)
+        else
         {
             // 플레이어 능력치 관리
             playerShooting.shotgunDamage = shotgunDamage;
@@ -99,7 +97,7 @@ public class CBoardManager : MonoBehaviour
     /// <summary>
     /// 플레이어 턴일 때 행동 할 수 있는 로직
     /// </summary>
-    private void HandleBlackPlayerTurn()
+    void HandleBlackPlayerTurn()
     {
         if (Input.GetKeyDown(KeyCode.W) && !cameraTransView.isInTopView) // 1인칭 시점일 때, 첫 번째 W 입력 시
         {
@@ -129,7 +127,7 @@ public class CBoardManager : MonoBehaviour
             }
         }
         // 플레이어를 선택했고 스페이스를 눌렀을 때 선택된 플레이어 해제
-        else if (Input.GetKeyDown(KeyCode.Space) && kingSelected) 
+        else if (Input.GetKeyDown(KeyCode.Space) && kingSelected)
         {
             DeselectChessman();
             kingSelected = false;
@@ -154,15 +152,10 @@ public class CBoardManager : MonoBehaviour
     /// <summary>
     /// 선택된 체스말의 강조 표시를 제거하고 선택 해제
     /// </summary>
-    private void DeselectChessman()
+    void DeselectChessman()
     {
         if (selectedChessman != null)
         {
-            MeshRenderer renderer = selectedChessman.GetComponent<MeshRenderer>();
-            if (renderer != null)
-            {
-                renderer.material = selectedChessman.originalMaterial; // 원래 재질로 복원
-            }
             CBoardHighlights.instance.HideHighlights(); // 강조 표시 숨김
             selectedChessman = null; // 선택된 체스말 초기화
         }
@@ -176,8 +169,7 @@ public class CBoardManager : MonoBehaviour
         List<(CChessman piece, int x, int y, bool isCapture)> validMoves = new List<(CChessman, int, int, bool)>();
         List<(CChessman piece, int x, int y)> captureMoves = new List<(CChessman, int, int)>();
 
-        // 모든 백색 말을 순회하면서 유효한 이동을 찾음
-        for (int i = 0; i < 8; i++)
+        for (int i = 0; i < 8; i++) // 모든 백색 말을 순회하면서 유효한 이동을 찾음
         {
             for (int j = 0; j < 8; j++)
             {
@@ -240,7 +232,7 @@ public class CBoardManager : MonoBehaviour
             lastMovedChessman = selectedChessman;
             lastMoveTarget = new Vector2(captureMove.x, captureMove.y);
 
-            
+
         }
         // 2. 잡을 말이 없으면 일반적인 이동을 실행
         else if (validMoves.Count > 0)
@@ -269,11 +261,11 @@ public class CBoardManager : MonoBehaviour
         if (chessMans[x, y] == null)
         {
             return;
-        }
+        } // return;
         if (chessMans[x, y].isWhite != isWhiteTurn)
         {
             return;
-        }
+        } // return;
 
         bool hasAtleastOneMove = false;
         allowedMoves = chessMans[x, y].PossibleMove();
@@ -288,16 +280,12 @@ public class CBoardManager : MonoBehaviour
                 }
             }
         }
-
         if (!hasAtleastOneMove)
         {
             return;
-        }
+        } // return;
 
         selectedChessman = chessMans[x, y];
-        previousMat = selectedChessman.GetComponent<MeshRenderer>().material;
-        selectedMat.mainTexture = previousMat.mainTexture;
-        selectedChessman.GetComponent<MeshRenderer>().material = selectedMat;
         CBoardHighlights.instance.HighlightAllowedMoves(allowedMoves);
     }
     /// <summary>
@@ -343,16 +331,6 @@ public class CBoardManager : MonoBehaviour
         }
 
         // 체스말 선택 해제 및 강조 표시 제거
-        if (selectedChessman != null)
-        {
-            MeshRenderer renderer = selectedChessman.GetComponent<MeshRenderer>();
-            if (renderer != null)
-            {
-                renderer.material = selectedChessman.originalMaterial;
-            }
-        }
-
-
         CBoardHighlights.instance.HideHighlights();
         selectedChessman = null;
     }
@@ -360,7 +338,7 @@ public class CBoardManager : MonoBehaviour
     /// <summary>
     /// 보드판 형성 로직
     /// </summary>
-    private void UpdateSelection()
+    void UpdateSelection()
     {
         if (!Camera.main && !cameraTransView.isInTopView)
         {
@@ -383,7 +361,7 @@ public class CBoardManager : MonoBehaviour
     /// <summary>
     /// 디버그용 보드판 체크 함수
     /// </summary>
-    private void DrawChessboard()
+    void DrawChessboard()
     {
         Vector3 widthLine = Vector3.right * 8;
         Vector3 heightLine = Vector3.forward * 8;
@@ -409,7 +387,6 @@ public class CBoardManager : MonoBehaviour
             Debug.DrawLine(topLeft, bottomRight); // 대각선 1
             Debug.DrawLine(topRight, bottomLeft); // 대각선 2
         }
-
     }
 
     /// <summary>
@@ -433,13 +410,13 @@ public class CBoardManager : MonoBehaviour
     /// <summary>
     /// 스테이지별 체스 말 형성 로직
     /// </summary>
-    private void SpawnAllChessmans()
+    void SpawnAllChessmans()
     {
         activeChessman = new List<GameObject>();
         chessMans = new CChessman[8, 8];
         EnPassantMove = new int[2] { -1, -1 };
 
-        // SpawnChessMan ( 체스말 인덱스, x좌표, y좌표)
+        // SpawnChessMan (체스말 인덱스, x좌표, y좌표)
         switch (stageFloor)
         {
             case 0: // 킹1, 비숍1, 나이트1, 폰2
@@ -490,7 +467,6 @@ public class CBoardManager : MonoBehaviour
                     SpawnChessMan(5, i, 1); // z축으로 폰 배치
                 }
                 break;
-
             case 4: // 킹1, 퀸1, 비숍2, 룩1, 나이트2, 폰7
                 SpawnChessMan(0, 4, 0); // 킹
                 SpawnChessMan(1, 3, 0); // 퀸
@@ -527,20 +503,13 @@ public class CBoardManager : MonoBehaviour
     /// <param name="index"></param>
     /// <param name="x"></param>
     /// <param name="y"></param>
-    private void SpawnChessMan(int index, int x, int y)
+    void SpawnChessMan(int index, int x, int y)
     {
         GameObject go = Instantiate(chessmanPrefabs[index], GetTileCenter(x, y), quaternion.identity) as GameObject;
         go.transform.SetParent(transform);
 
         chessMans[x, y] = go.GetComponent<CChessman>();
         chessMans[x, y].SetPosition(x, y);
-
-        MeshRenderer renderer = go.GetComponent<MeshRenderer>();
-        if (renderer != null)
-        {
-            chessMans[x, y].originalMaterial = renderer.material;
-        }
-
         activeChessman.Add(go);
     }
 

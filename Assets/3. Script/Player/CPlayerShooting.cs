@@ -34,8 +34,9 @@ public class CPlayerShooting : MonoBehaviour
 
     public int shotgunDamage;
     public int MinshotgunDistance;
-    [Range(1f, 8f)] public int MaxshotgunDistance;
-    public float shotAngle;
+    [Range(1f, 8f)] 
+    public int MaxshotgunDistance; // 플레이어 사거리
+    public float shotAngle; // 발사각
     public int numberOfPoints;
 
     // 총알 관련 변수
@@ -51,7 +52,7 @@ public class CPlayerShooting : MonoBehaviour
     private bool isPaused = false; // 게임 일시 정지 상태
     #endregion
 
-    private void Awake()
+    void Awake()
     {
         cameraTransView = FindObjectOfType<CCameraTransView>();
         boardManager = FindObjectOfType<CBoardManager>();
@@ -59,12 +60,12 @@ public class CPlayerShooting : MonoBehaviour
         backMainMenuButton.onClick.AddListener(BackMainMenuButton);
     }
 
-    private void Start()
+    void Start()
     {
         UpdateBulletUI();
     }
 
-    private void Update()
+    void Update()
     {
         MinshotgunDistance = MaxshotgunDistance - 2;
         VisualizeShotgunSpread();
@@ -120,7 +121,6 @@ public class CPlayerShooting : MonoBehaviour
             boardManager.isWhiteTurn = true;
             camAnim.Play(camAnim.clip.name);
             ShootShotgun();
-            loadedBullets--; // 총알을 발사하면 장전된 총알을 하나 감소
             UpdateBulletUI(); // UI 업데이트
         }
 
@@ -135,26 +135,29 @@ public class CPlayerShooting : MonoBehaviour
     }
 
     // 발사 범위 시각화 함수
-    private void VisualizeShotgunSpread()
+    void VisualizeShotgunSpread()
     {
+        // 라인 렌더러에 표시할 점의 수를 설정. 시작점, 끝점, 각 탄환 경로를 포함해 총 numberOfPoints + 2 개
         lineRenderer.positionCount = numberOfPoints + 2;
         Vector3[] linePoints = new Vector3[numberOfPoints + 2];
-
-        linePoints[0] = firePoint.transform.position;
+        linePoints[0] = firePoint.transform.position; // firePoint를 라인 시작 위치로 설정
 
         for (int i = 1; i <= numberOfPoints; i++)
         {
+            // 탄환의 퍼짐 각도를 Mathf.Lerp로 계산합니다. 이 값은 -shotAngle / 2부터 shotAngle / 2까지 균등하게 분포
             float angle = Mathf.Lerp(-shotAngle / 2, shotAngle / 2, (float)(i - 1) / (numberOfPoints - 1));
+            // 회전 방향을 계산하여 특정 각도로 탄환이 퍼지도록
             Vector3 direction = Quaternion.Euler(0, angle, 0) * firePoint.transform.forward;
+            // firePoint에서 지정된 MaxshotgunDistance만큼 떨어진 위치에 각 탄환이 도달하도록 좌표를 설정
             linePoints[i] = firePoint.transform.position + direction.normalized * MaxshotgunDistance;
         }
 
         linePoints[numberOfPoints + 1] = firePoint.transform.position;
-        lineRenderer.SetPositions(linePoints);
+        lineRenderer.SetPositions(linePoints); // 계산한 각 탄환 위치를 라인 렌더러에 적용
     }
 
     // 총알 발사 함수
-    private void ShootShotgun()
+    void ShootShotgun()
     {
         // 총알 발사
         for (int i = 0; i < shotgunDamage; i++)
@@ -174,6 +177,7 @@ public class CPlayerShooting : MonoBehaviour
             }
         }
         // 탄피 배출
+        loadedBullets--; // 총알을 발사하면 장전된 총알을 하나 감소
         GameObject intantCase = Instantiate(bulletCase, bulletCasePos.position, bulletCasePos.rotation);
         Rigidbody caseRigid = intantCase.GetComponent<Rigidbody>();
         Vector3 caseVec = bulletCasePos.forward * Random.Range(-2, -1) + Vector3.up * Random.Range(2, 3);
@@ -182,59 +186,52 @@ public class CPlayerShooting : MonoBehaviour
         Destroy(intantCase, 3f);
     }
 
-    // 장전된 총알 UI 업데이트 함수
-    private void UpdateLoadedBulletUI()
+    
+    void UpdateLoadedBulletUI() // 장전된 총알 UI 업데이트 함수
     {
-        // 기존 UI 제거
-        foreach (Transform child in LoadedBulletUI.transform)
+        foreach (Transform child in LoadedBulletUI.transform) // 기존 UI 제거
         {
             Destroy(child.gameObject);
         }
 
-        // 장전된 총알 표시
-        for (int i = 0; i < loadedBullets; i++)
+        for (int i = 0; i < loadedBullets; i++) // 장전된 총알 표시
         {
             Instantiate(BulletPrefab, LoadedBulletUI.transform);
         }
 
-        // 빈 장전 슬롯 표시
-        for (int i = loadedBullets; i < maxLoadedBullets; i++)
+        for (int i = loadedBullets; i < maxLoadedBullets; i++) // 빈 장전 슬롯 표시
         {
             Instantiate(EmptyBulletPrefab, LoadedBulletUI.transform);
         }
     }
 
-    // 플레이어가 가지고 있는 총알 UI 업데이트 함수
-    private void UpdatePlayerBulletUI()
+    void UpdatePlayerBulletUI() // 플레이어가 가지고 있는 총알 UI 업데이트 함수
     {
-        // 기존 UI 제거
-        foreach (Transform child in PlayerBulletUI.transform)
+        foreach (Transform child in PlayerBulletUI.transform) // 기존 UI 제거
         {
             Destroy(child.gameObject);
         }
-
-        // 남은 총알 표시
-        for (int i = 0; i < currentBullets; i++)
+        
+        for (int i = 0; i < currentBullets; i++) // 남은 총알 표시
         {
             Instantiate(BulletPrefab, PlayerBulletUI.transform);
         }
 
-        // 빈 슬롯 표시
-        for (int i = currentBullets; i < maxBullets; i++)
+        for (int i = currentBullets; i < maxBullets; i++) // 빈 슬롯 표시
         {
             Instantiate(EmptyBulletPrefab, PlayerBulletUI.transform);
         }
     }
 
     // 두 가지 UI 업데이트 함수 호출
-    private void UpdateBulletUI()
+    void UpdateBulletUI()
     {
         UpdateLoadedBulletUI();  // 장전된 총알 UI 업데이트
         UpdatePlayerBulletUI();  // 플레이어가 소유한 총알 UI 업데이트
     }
 
     // 장전 함수
-    private void Reload()
+    void Reload()
     {
         CSoundManager.Instance.PlaySfx(4);
         // 현재 가지고 있는 총알 중에서 샷건에 장전할 총알 수 계산
@@ -246,7 +243,7 @@ public class CPlayerShooting : MonoBehaviour
         StartCoroutine(ReloadMotion());
     }
 
-    private IEnumerator ReloadMotion()
+    IEnumerator ReloadMotion()
     {
         shotgun.SetActive(false);
         shotgunReload.SetActive(true);

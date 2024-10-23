@@ -5,14 +5,8 @@ using UnityEngine.SceneManagement;
 public class CKing : CChessman
 {
     #region 변수
-    public int health = 8; // 킹의 체력
-    public int currentHealth; // 킹의 현재 체력
     private Rigidbody rb; // 킹의 Rigidbody 참조
     private bool isDead = false;
-    public GameObject kingStatus;
-    public GameObject chessHp;
-    public GameObject heartPrefab;
-    public GameObject emptyHeartPrefab;
     private CBoardManager boardManager;
     #endregion
 
@@ -22,15 +16,16 @@ public class CKing : CChessman
         cameraTransView = FindObjectOfType<CCameraTransView>();
         damagePool = FindObjectOfType<CUIDamagePool>(); // 데미지 풀 찾기
         boardManager = FindObjectOfType<CBoardManager>();
+        health = 8;
     }
 
     private void Start()
     {
         rb = GetComponent<Rigidbody>(); // Rigidbody 참조
         currentHealth = health;
-        if (kingStatus != null)
+        if (Status != null)
         {
-            kingStatus.SetActive(false);
+            Status.SetActive(false);
         }
         if (isWhite)
         {
@@ -73,7 +68,7 @@ public class CKing : CChessman
     {
         if (isWhite)
         {
-            CChessUIManager.instance.ShowUI(kingStatus);
+            CChessUIManager.instance.ShowUI(Status);
         }
     }
 
@@ -81,7 +76,7 @@ public class CKing : CChessman
     {
         if (isWhite)
         {
-            CChessUIManager.instance.HideUI(kingStatus);
+            CChessUIManager.instance.HideUI(Status);
         }
     }
     private void OnCollisionEnter(Collision collision)
