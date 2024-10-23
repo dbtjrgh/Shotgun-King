@@ -752,13 +752,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damagePool: {fileID: 0}
   isWhite: 1
-  cameraTransView: {fileID: 0}
   health: 3
   currentHealth: 0
-  pawnStatus: {fileID: 1599422895}
+  cameraTransView: {fileID: 0}
+  Status: {fileID: 1599422895}
   chessHp: {fileID: 1431102952}
   heartPrefab: {fileID: 4116125030168135522, guid: ce3a6a9950395e942925e90757046d4b, type: 3}
   emptyHeartPrefab: {fileID: 3575271446010735883, guid: 8829991058064df4e9a90aa2914f890f, type: 3}
+  pawnStatus: {fileID: 1599422895}
 --- !u!136 &16351844
 CapsuleCollider:
   m_ObjectHideFlags: 0

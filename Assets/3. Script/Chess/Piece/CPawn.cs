@@ -6,14 +6,8 @@ using UnityEngine;
 public class CPawn : CChessman
 {
     #region 변수
-    public int health = 3;
-    public int currentHealth;
     private Rigidbody rb;
     private bool isDead = false;
-    public GameObject pawnStatus;
-    public GameObject chessHp;
-    public GameObject heartPrefab;
-    public GameObject emptyHeartPrefab;
     private Animator animator;
     private float timer;
     private float idleSwitchTime = 3.3f; // 애니메이션 전환 주기
@@ -23,14 +17,15 @@ public class CPawn : CChessman
     {
         damagePool = FindObjectOfType<CUIDamagePool>(); // 데미지 풀 찾기
         animator = GetComponent<Animator>();
+        health = 3;
     }
     private void Start()
     {
         rb = GetComponent<Rigidbody>(); // Rigidbody 참조
         currentHealth = health;
-        if (pawnStatus != null)
+        if (Status != null)
         {
-            pawnStatus.SetActive(false);
+            Status.SetActive(false);
         }
         UpdateHealthUI();
         cameraTransView = FindObjectOfType<CCameraTransView>();
@@ -93,11 +88,11 @@ public class CPawn : CChessman
     }
     private void OnMouseEnter()
     {
-        CChessUIManager.instance.ShowUI(pawnStatus);
+        CChessUIManager.instance.ShowUI(Status);
     }
     private void OnMouseExit()
     {
-        CChessUIManager.instance.HideUI(pawnStatus);
+        CChessUIManager.instance.HideUI(Status);
     }
 
     private void OnCollisionEnter(Collision collision)

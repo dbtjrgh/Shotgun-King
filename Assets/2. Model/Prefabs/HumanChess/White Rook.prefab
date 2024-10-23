@@ -421,7 +421,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1709240345
 RectTransform:
   m_ObjectHideFlags: 0
@@ -783,10 +783,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damagePool: {fileID: 0}
   isWhite: 1
-  cameraTransView: {fileID: 0}
   health: 5
   currentHealth: 0
-  rookStatus: {fileID: 1709240344}
+  cameraTransView: {fileID: 0}
+  Status: {fileID: 1709240344}
   chessHp: {fileID: 1844062756}
   heartPrefab: {fileID: 4116125030168135522, guid: ce3a6a9950395e942925e90757046d4b, type: 3}
   emptyHeartPrefab: {fileID: 3575271446010735883, guid: 8829991058064df4e9a90aa2914f890f, type: 3}
