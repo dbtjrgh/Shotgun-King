@@ -1161,6 +1161,7 @@ MonoBehaviour:
   chessHp: {fileID: 1282124996}
   heartPrefab: {fileID: 4116125030168135522, guid: ce3a6a9950395e942925e90757046d4b, type: 3}
   emptyHeartPrefab: {fileID: 3575271446010735883, guid: 8829991058064df4e9a90aa2914f890f, type: 3}
+  kingStatus: {fileID: 1974296990}
 --- !u!54 &1669440286
 Rigidbody:
   m_ObjectHideFlags: 0
